@@ -18,11 +18,24 @@
 .app-container {
   width: 90%;
   max-width: 400px; /* スマホの横幅を意識 */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* 左右中央に寄せる */
+  
+  width: 100%;
+  max-width: 400px;     /* スマホサイズを維持 */
+  margin: 0 auto;       /* ブラウザ中央に配置 */
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
 .app-title {
-  color: #333;
+  width: 100%;
+  text-align: left;     /* 「マイページ」という文字自体は左寄せのままが良い場合 */
   margin-bottom: 20px;
+  color: #333;
 }
 
 /* カードのデザイン */
@@ -32,6 +45,7 @@
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  width: 100%;
 }
 
 .card-header {
@@ -74,15 +88,34 @@
   margin: 0;
 }
 
+.button-group {
+  display: flex;
+  flex-direction: column; /* 縦に並べる設定 */
+  gap: 16px;              /* ボタン同士の上下の隙間 */
+  width: 100%;            /* 横幅いっぱい */
+  margin-top: 30px;
+  padding: 0 10px;        /* 左右に少しゆとりを持たせる */
+  box-sizing: border-box;
+}
+
 /* ボタン */
 .action-button {
   width: 100%;
-  margin-top: 30px;
-  padding: 15px;
-  border: none;
-  border-radius: 12px;
-  background-color: white;
-  color: #1e3a8a;
+  padding: 18px 0;
+  border-radius: 16px; /* 角丸を少し大きくしてカードに合わせる */
+  font-size: 16px;
   font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  cursor: pointer;
+  
+  /* 修正ポイント：線を消し、影を「広く・薄く」する */
+  border: none; 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); /* 透明度を0.06（6%）に下げてカードっぽく */
+  
+  transition: all 0.3s ease;
+}
+
+.action-button:active {
+  transform: translateY(2px); /* 押した時に少し沈む演出 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0.9;
 }
