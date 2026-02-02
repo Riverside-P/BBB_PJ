@@ -1,0 +1,63 @@
+/* 画面全体 */
+.complete-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  background-color: #f5f7fa;
+  text-align: center;
+}
+
+/* メインコンテンツエリア */
+.content-wrapper {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 画像を中央に配置 */
+}
+
+/* ★画像のサイズ調整用クラス */
+.check-mark-img {
+  width: 100px;  /* ここで好きな大きさに調整してください */
+  height: auto;  /* 比率を維持 */
+  margin-bottom: 20px;
+  display: block;
+}
+
+.success-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* フッターエリア */
+.footer-area {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.btn-top {
+  width: 100%;
+  padding: 15px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-top:active {
+  opacity: 0.8;
+}
