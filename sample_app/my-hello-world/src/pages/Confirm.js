@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Confirm.css'; 
 
+
 const Confirm = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +37,7 @@ const Confirm = () => {
           setTransferData({
             toId: user.id,
             toName: user.name,
-            toAccount: user.account_number || '****', 
+            toAccount: user.account_number || '****',
             toIcon: user.icon_url,
           });
         } else {
@@ -70,9 +71,9 @@ const Confirm = () => {
 
 
     // ★追加2: 送信データに message を含める
-    const requestBody = { 
-      fromId: 1, 
-      toId: transferData.toId, 
+    const requestBody = {
+      fromId: 1,
+      toId: transferData.toId,
       amount: sendAmount,
       message: message // サーバー側で受け取る準備が必要です
     };
@@ -85,7 +86,7 @@ const Confirm = () => {
       });
 
       if (res.ok) {
-        navigate('/complete'); 
+        navigate('/complete');
       } else {
         const errorData = await res.json();
         alert(errorData.error || "エラーが発生しました");
