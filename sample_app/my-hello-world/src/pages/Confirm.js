@@ -1,29 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import './Confirm.css';
+import { useLocation, useNavigate } from 'react-router-dom';
+import './Confirm.css'; // ★修正ポイント1: パスを ../ に修正
 
-const Confirm = ({ onBack, onComplete }) => {
-  const [transferData, setTransferData] = useState(null); // 相手(ID:2)
-  const [myBalance, setMyBalance] = useState(null);       // 自分(ID:1)
-  const [amount, setAmount] = useState('');               // ★入力された金額
+const Confirm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // 画面が開いたらデータを取得
+  // ★修正ポイント2: Send画面から渡された "user" データを受け取る
+  // (なければ undefined になるので、空のオブジェクト {} をバックアップにする)
+  const { user } = location.state || {};
+
+  const [transferData, setTransferData] = useState(null); // 相手
+  const [myBalance, setMyBalance] = useState(null);       // 自分
+  const [amount, setAmount] = useState('');               // 金額
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 相手（ID:2）
-        const toRes = await fetch('http://localhost:3001/users/2');
-        const toData = await toRes.json();
+        // --- 1. 相手データのセット ---
+        if (user) {
+          // A. Send画面からデータが届いている場合 → それを使う（早い！）
+          console.log("受け取ったデータ:", user);
+          setTransferData({
+            toId: user.id,
+            toName: user.name,
+            toAccount: user.account_number || '****', // データになければ仮置き
+            toIcon: user.icon_url,
+          });
+        } else {
+          // B. データがない場合（URL直打ちなど） → サーバーから取り直す（フォールバック）
+          // ※とりあえず ID:2 を固定で取得する設定にしています
+          console.log("データがないためサーバーから取得します");
+          const toRes = await fetch('http://localhost:3001/users/2');
+          const toData = await toRes.json();
+          setTransferData({
+            toId: toData.id,
+            toName: toData.name,
+            toAccount: toData.account_number,
+            toIcon: toData.icon_url,
+          });
+        }
 
-        // 自分（ID:1）
+        // --- 2. 自分の残高取得 (ID:1) ---
         const fromRes = await fetch('http://localhost:3001/users/1');
         const fromData = await fromRes.json();
-
-        setTransferData({
-          toId: toData.id,
-          toName: toData.name,
-          toAccount: toData.account_number,
-          toIcon: toData.icon_url,
-        });
         setMyBalance(fromData.balance);
 
       } catch (err) {
@@ -31,23 +51,14 @@ const Confirm = ({ onBack, onComplete }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [user]); // userが変わったら再実行
 
-  // 送金ボタンを押した時の処理
+  // 送金ボタン処理
   const handleTransfer = async () => {
     const sendAmount = Number(amount);
+    if (sendAmount <= 0) return alert("金額を入力してください");
+    if (sendAmount > myBalance) return alert("残高不足です");
 
-    // バリデーション（入力チェック）
-    if (sendAmount <= 0) {
-      alert("金額を入力してください");
-      return;
-    }
-    if (sendAmount > myBalance) {
-      alert("残高不足です");
-      return;
-    }
-
-    // サーバーへ送金依頼
     const requestBody = { 
       fromId: 1, 
       toId: transferData.toId, 
@@ -55,6 +66,7 @@ const Confirm = ({ onBack, onComplete }) => {
     };
 
     try {
+      // サーバー(3001番)へ送金リクエスト
       const res = await fetch('http://localhost:3001/transfers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,82 +74,79 @@ const Confirm = ({ onBack, onComplete }) => {
       });
 
       if (res.ok) {
-        // 成功したら、親(App.js)から渡された完了時の処理を実行
-        // もし親の設定がまだなら、とりあえずアラートを出してリロード
-        if (onComplete) {
-          onComplete();
-        } else {
-          alert("送金完了しました！");
-          window.location.reload();
-        }
+        alert("送金完了しました！");
+        navigate('/'); // Homeへ戻る
       } else {
         alert("エラーが発生しました");
       }
     } catch (error) {
+      console.error(error);
       alert("通信エラー");
     }
   };
 
-  // 読み込み中
+  // 読み込み中表示
   if (!transferData || myBalance === null) {
-    return <div className="container"><p style={{marginTop:'50px'}}>Loading...</p></div>;
+    return <div className="app-container"><p>Loading...</p></div>;
   }
 
-  // ★リアルタイム計算：今の残高 - 入力した金額
   const afterBalance = myBalance - Number(amount);
 
   return (
-    <div className="container">
-      <h2 className="appTitle">送金金額の入力</h2>
+    <div className="app-container">
+      <h2 className="app-title">送金金額の入力</h2>
 
-      <div className="card">
-        <h3 className="cardTitle">送金先</h3>
+      <div className="card"> {/* CSSクラス名は適宜調整してください */}
+        <h3 className="card-title">送金先</h3>
         
-        <div className="userInfo">
-          <img src={transferData.toIcon} alt="icon" className="userIcon" />
-          <p className="userName">{transferData.toName} 様</p>
+        <div className="user-info">
+          <img 
+             src={transferData.toIcon || 'https://placehold.jp/150x150.png'} 
+             alt="icon" 
+             className="user-icon" 
+             style={{width: '50px', height: '50px', borderRadius: '50%'}} // 念のためスタイル
+          />
+          <p className="user-name">{transferData.toName} 様</p>
         </div>
-        <p className="accountInfo">普通 {transferData.toAccount}</p>
+        <p className="account-info">普通 {transferData.toAccount}</p>
         
         <hr className="divider" />
 
-        {/* ★金額入力エリア */}
-        <div className="totalRow" style={{ alignItems: 'center' }}>
+        {/* 金額入力 */}
+        <div className="input-group">
           <span className="label">送金金額</span>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span style={{ fontSize: '24px', color: 'white', marginRight: '5px' }}>¥</span>
+          <div className="amount-wrapper">
+            <span className="currency-symbol">¥</span>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0"
-              className="amountInput" 
+              className="amount-input" 
             />
           </div>
         </div>
 
         <hr className="divider" />
 
-        {/* 残高シミュレーション */}
-        <div className="balancePreview">
-          <p className="balanceTitle">送金後の残高</p>
-          <div className="balanceRow">
-            <span className="balanceBefore">¥{myBalance.toLocaleString()}</span>
+        {/* 残高プレビュー */}
+        <div className="balance-preview">
+          <p>送金後の残高</p>
+          <div className="balance-row">
+            <span>¥{myBalance.toLocaleString()}</span>
             <span className="arrow">→</span>
-            {/* マイナスになったら赤文字にする演出 */}
-            <span className="balanceAfter" style={{ color: afterBalance < 0 ? '#ff9999' : '#fbbf24' }}>
+            <span style={{ color: afterBalance < 0 ? 'red' : 'orange' }}>
               ¥{afterBalance.toLocaleString()}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="buttonGroup">
-        <button className="btnPrimary" onClick={handleTransfer}>
+      <div className="button-group">
+        <button className="action-button primary" onClick={handleTransfer}>
           送金する
         </button>
-        {/* 親から onBack が渡されていれば実行、なければ何もしない */}
-        <button className="btnSecondary" onClick={onBack ? onBack : () => {}}>
+        <button className="action-button secondary" onClick={() => navigate(-1)}>
           戻る
         </button>
       </div>
