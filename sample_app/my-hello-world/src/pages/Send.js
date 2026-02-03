@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Send.css'; // ← パスはあなたの環境に合わせて (../Send.css かも)
+import '../styles/Send.css';
 
 function Send() {
   const navigate = useNavigate();
