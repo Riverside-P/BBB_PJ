@@ -15,9 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
     icon_url TEXT                 -- ①ユーザアイコン
 );
 
--- 今後、ステップ5や7で必要になる transfers や requests テーブルも
--- 決まり次第、このファイルに追記して共有しましょう。
-
 -- リンク情報を管理するテーブル
 -- 外部キー制約を有効にする（セッションごとに必要）
 PRAGMA foreign_keys = ON;

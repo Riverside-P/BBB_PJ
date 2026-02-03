@@ -5,6 +5,7 @@ const cors = require('cors');
 // 作ったコントローラーをそれぞれ読み込む
 const userController = require('./controllers/userController');
 const transferController = require('./controllers/transferController');
+const reqHisController = require('./controllers/ReqHisController');
 
 const app = express();
 const PORT = 3001;
@@ -21,6 +22,10 @@ app.get('/users/:id', userController.getUserById);   // 詳細
 
 // 送金関連の窓口 -> transferControllerにお任せ
 app.post('/transfers', transferController.createTransfer); // 送金
+
+// 請求履歴関連の窓口 -> reqHisControllerにお任せ
+app.get('/links', reqHisController.getAllLinks);                    // 全件取得
+app.get('/links/:accountNumber', reqHisController.getLinksByRequester); // 特定ユーザーの請求
 
 // ヘルスチェック
 app.get('/health', (req, res) => res.json({ ok: true }));
