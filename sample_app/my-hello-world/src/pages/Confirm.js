@@ -74,8 +74,7 @@ const Confirm = () => {
       });
 
       if (res.ok) {
-        alert("送金完了しました！");
-        navigate('/'); // Homeへ戻る
+        navigate('/complete'); // Homeへ戻る
       } else {
         alert("エラーが発生しました");
       }
