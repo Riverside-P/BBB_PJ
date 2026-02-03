@@ -305,4 +305,3 @@ npm run dev
 - Confirm → POST /transfers の設計
 - transactions テーブル設計の詳細化
 - 残高更新ロジックの整理
-
