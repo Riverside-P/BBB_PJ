@@ -7,6 +7,7 @@ import Confirm from './pages/Confirm';
 import Complete from './pages/Complete';
 import Request from './pages/Request';
 import Link from './pages/Link';
+import Pay from './pages/Pay';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/complete" element={<Complete />} />
         <Route path="/request" element={<Request />} />
         <Route path="/link" element={<Link />} />
+        <Route path="/pay" element={<Pay />} />
       </Routes>
     </BrowserRouter>
   );
