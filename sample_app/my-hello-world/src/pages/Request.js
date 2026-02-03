@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Reqest.css'; // 専用のスタイル
+import '../styles/Request.css'; // 専用のスタイル
 
 function Request() {
   const navigate = useNavigate();
