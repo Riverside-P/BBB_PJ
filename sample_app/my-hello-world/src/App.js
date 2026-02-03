@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Send from './pages/Send';
 import Confirm from './pages/Confirm';
 import Complete from './pages/Complete';
+import Pay from './pages/Pay';
+
 function App() {
   return (
     <BrowserRouter>
@@ -13,6 +15,7 @@ function App() {
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/send" element={<Send />} />
         <Route path="/complete" element={<Complete />} />
+        <Route path="/pay" element={<Pay />} />
       </Routes>
     </BrowserRouter>
   );
