@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router"
 import './pages/Home';
 import Home from './pages/Home';
 import Send from './pages/Send';
+import Confirm from './pages/Confirm';
 import Complete from './pages/Complete';
 
 function App() {
@@ -10,8 +11,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        
         <Route path="/send" element={<Send />} />
+        <Route path="/confirm" element={<Confirm />} />
         <Route path="/complete" element={<Complete />} />
       </Routes>
     </BrowserRouter>
