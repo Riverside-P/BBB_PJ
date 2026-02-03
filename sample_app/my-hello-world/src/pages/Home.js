@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css'; // スタイルを引き継ぐため
 import { useNavigate } from 'react-router';
+import userImage from "./human_image_a.png";
 
 // 先頭は大文字にするのがReactの約束です
 function Home() {
@@ -10,7 +11,7 @@ function Home() {
     name: "三菱 太郎",
     accountNumber: "普通 1234567",
     balance: "1,250,000",
-    icon: "🏦"
+    // icon: "🏦"
   };
 
   return (
@@ -18,7 +19,7 @@ function Home() {
       <h2 className="app-title">マイページ</h2>
       <div className="account-card">
         <div className="card-header">
-          <span className="bank-icon">{accountData.icon}</span>
+          <img src={userImage} className="user-icon" alt="ユーザーアイコン" />
           <span className="account-type">メイン口座</span>
         </div>
         <div className="user-info">
