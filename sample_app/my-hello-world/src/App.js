@@ -1,30 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
-// src/App.js
 import React from 'react';
-import HelloWorld from './HelloWorld';
+import { BrowserRouter, Routes, Route } from "react-router"
+import './pages/Home';
+import Home from './pages/Home';
+import Send from './pages/Send';
+import Confirm from './pages/Confirm';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <div className="Hello">
-          <HelloWorld />
-        </div>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/send" element={<Send />} />
+        <Route path="/confirm" element={<Confirm />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
