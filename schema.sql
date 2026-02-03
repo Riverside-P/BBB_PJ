@@ -15,5 +15,12 @@ CREATE TABLE IF NOT EXISTS users (
     icon_url TEXT                 -- ①ユーザアイコン
 );
 
+-- ダミーデータ挿入
+INSERT INTO users (name, account_number, balance, icon_url) VALUES
+  ('三菱 太郎', '普通 1234567', 1250000, '🏦'),
+  ('山田 花子', '普通 7654321', 850000, '👩'),
+  ('鈴木 二郎', '普通 5555555', 500000, '👨'),
+  ('佐藤 美咲', '普通 9999999', 2000000, '👧');
+
 -- 今後、ステップ5や7で必要になる transfers や requests テーブルも
 -- 決まり次第、このファイルに追記して共有しましょう。
