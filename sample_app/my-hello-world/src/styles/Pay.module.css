@@ -1,6 +1,5 @@
 /* src/pages/Pay.module.css */
 
-/* 全体の背景 */
 .container {
   background-color: #f0f2f5;
   min-height: 100vh;
@@ -11,7 +10,6 @@
   padding-top: 20px;
 }
 
-/* タイトル周り */
 .appTitle {
   color: #333;
   margin-bottom: 20px;
@@ -19,26 +17,25 @@
   font-weight: bold;
 }
 
-/* 青いカードのデザイン（ホーム画面と統一） */
 .card {
   width: 90%;
   max-width: 400px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); /* 銀行っぽい紺色 */
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   color: white;
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .cardTitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8); /* 白の透過 */
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 15px;
   font-weight: bold;
 }
 
-/* ユーザー情報 */
 .userInfo {
   display: flex;
   align-items: center;
@@ -46,8 +43,8 @@
 }
 
 .userIcon {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   margin-right: 12px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -56,31 +53,29 @@
 }
 
 .userName {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  margin: 0;
   color: white;
+  margin: 0;
 }
 
 .accountInfo {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
-  margin-left: 52px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   letter-spacing: 1px;
 }
 
 .divider {
   border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2); /* 薄い白線 */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   margin: 20px 0;
 }
 
-/* 金額表示 */
 .totalRow {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-top: 10px;
 }
 
@@ -93,15 +88,15 @@
   font-size: 28px;
   font-weight: bold;
   color: white;
+  line-height: 1;
 }
 
-/* 残高ビフォーアフター（半透明の白背景で馴染ませる） */
 .balancePreview {
-  background-color: rgba(255, 255, 255, 0.15); /* ガラスっぽい半透明 */
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 15px;
   margin-top: 20px;
-  text-align: center;
+  text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -119,25 +114,28 @@
   font-size: 16px;
   font-weight: bold;
   color: white;
+  margin-top: 10px;
 }
 
-.balanceBefore {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: line-through;
-  font-size: 14px;
+.amountInput {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 100%;
+  max-width: 250px;
+  text-align: left;
+  outline: none;
+  padding: 5px 0;
+  margin-top: 10px;
 }
 
-.arrow {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
+.amountInput:focus {
+  border-bottom: 2px solid white;
 }
 
-.balanceAfter {
-  color: #fbbf24; /* 強調色の黄色（青背景に映える色） */
-  font-size: 18px;
-}
-
-/* ボタン（白背景・青文字にして目立たせる） */
 .buttonGroup {
   width: 90%;
   max-width: 400px;
@@ -151,8 +149,8 @@
   width: 100%;
   padding: 16px;
   border-radius: 12px;
-  background-color: white; /* 背景を白に */
-  color: #1e3a8a;          /* 文字を紺色に */
+  background-color: white;
+  color: #1e3a8a;
   border: none;
   font-size: 16px;
   font-weight: bold;
@@ -165,39 +163,22 @@
   transform: scale(0.98);
 }
 
+/* 【重要】グレーアウト時のスタイル改善 */
+.btnPrimary.disabled {
+  background-color: #d1d5db; /* 落ち着いたグレー */
+  color: #6b7280;           /* 読みやすい濃いめの文字色 */
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .btnSecondary {
   width: 100%;
   padding: 16px;
   border-radius: 12px;
   background-color: transparent;
-  color: #666; /* 背景が白(body)の上に乗るのでグレー */
+  color: #666;
   border: 2px solid #ddd;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-}
-
-/* --- 追加: 金額入力フォームのデザイン --- */
-.amountInput {
-  background: transparent;     /* 背景透明 */
-  border: none;                /* 枠なし */
-  border-bottom: 2px solid rgba(255, 255, 255, 0.5); /* 下線 */
-  color: white;
-  font-size: 32px;             /* 大きく */
-  font-weight: bold;
-  width: 150px;
-  text-align: right;           /* 右寄せ */
-  outline: none;               /* 青枠消し */
-  padding: 5px;
-}
-
-.amountInput:focus {
-  border-bottom: 2px solid white; /* 入力中は白線を濃く */
-}
-
-/* 数字入力欄の矢印を消す（見た目をスッキリさせる） */
-.amountInput::-webkit-outer-spin-button,
-.amountInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
