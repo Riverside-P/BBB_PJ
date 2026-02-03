@@ -3,6 +3,7 @@ import '../styles/Home.css'; // スタイルを引き継ぐため
 import { useNavigate } from 'react-router-dom';
 import userImage from "../images/human_image_a.png";
 
+
 function Home() {
   const navigate = useNavigate();
 
@@ -37,8 +38,9 @@ function Home() {
       <h2 className="app-title">マイページ</h2>
       <div className="account-card">
         <div className="card-header">
-          {/* [変更点] user.icon_url を使用。なければ project 画像をフォールバック */}
-          <img src={user.icon_url || userImage} className="user-icon" alt="ユーザーアイコン" />
+          {/* [変更点] user.icon_url を使用 */}
+          <img src={user.icon_url} className="user-icon" alt="ユーザーアイコン" />
+
           <span className="account-type">メイン口座</span>
         </div>
         <div className="user-info">
