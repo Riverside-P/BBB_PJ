@@ -33,7 +33,7 @@ function Home() {
       </div>
       <div className="button-group">
         <button className="action-button send-button" onClick={() => navigate('/send')}>送金</button>
-        <button className="action-button request-button">請求</button>
+        <button className="action-button request-button" onClick={() => navigate('/request')}>請求</button>
         </div>
     </div>
   );
