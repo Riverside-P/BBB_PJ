@@ -150,7 +150,24 @@ CREATE TABLE users (
 
 ---
 
-## 5. DB構築フロー（必読）
+## 5. 暫定DB構築フロー（こっち使う）
+
+### ① 依存関係をインストール
+
+```bash
+npm install sqlite3 sqlite
+
+```
+
+### ② sqchema.sql, seed.sqlをDBに反映
+
+```bash
+BBB_PJ\sample_app\my-hello-world\backend\db>sqlite3 bbb_database.db < ../schema.sql
+BBB_PJ\sample_app\my-hello-world\backend\db>sqlite3 bbb_database.db < ../seed.sql
+
+```
+
+## 5. （一旦保留）DB構築フロー
 
 ### ① 依存関係のインストール
 
