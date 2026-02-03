@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Send from './pages/Send';
 import Confirm from './pages/Confirm';
 import Complete from './pages/Complete';
-import Request from './pages/Reqest';
+import Request from './pages/Request';
 function App() {
   return (
     <BrowserRouter>
