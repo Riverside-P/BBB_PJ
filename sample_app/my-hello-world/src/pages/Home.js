@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './Home.css';
-import { useNavigate } from 'react-router';
+import '../styles/Home.css'; // スタイルを引き継ぐため
+import { useNavigate } from 'react-router-dom';
+import userImage from "../images/human_image_a.png";
+
 
 function Home() {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ function Home() {
         <div className="card-header">
           {/* [変更点] user.icon_url を使用 */}
           <img src={user.icon_url} className="user-icon" alt="ユーザーアイコン" />
+
           <span className="account-type">メイン口座</span>
         </div>
         <div className="user-info">
