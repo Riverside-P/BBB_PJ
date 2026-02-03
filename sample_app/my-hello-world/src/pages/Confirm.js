@@ -14,6 +14,21 @@ const Confirm = () => {
   const [myBalance, setMyBalance] = useState(null);       // 自分
   const [amount, setAmount] = useState('');               // 金額
 
+  // ボタンを無効にする条件を定義
+  const isDisabled = !amount || Number(amount) <= 0;
+
+
+  // 入力文字数を制限するハンドラー
+  const handleAmountChange = (e) => {
+  const value = e.target.value;
+
+  // 数字（0-9）のみを許可し、かつ20桁以内に制限する
+  // ^\d*$ は「空文字、または数字のみ」にマッチします
+  if (/^\d*$/.test(value) && value.length <= 20) {
+    setAmount(value);
+  }
+};
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,10 +74,10 @@ const Confirm = () => {
     if (sendAmount <= 0) return alert("金額を入力してください");
     if (sendAmount > myBalance) return alert("残高不足です");
 
-    const requestBody = { 
-      fromId: 1, 
-      toId: transferData.toId, 
-      amount: sendAmount 
+    const requestBody = {
+      fromId: 1,
+      toId: transferData.toId,
+      amount: sendAmount
     };
 
     try {
@@ -97,19 +112,25 @@ const Confirm = () => {
 
       <div className="card"> {/* CSSクラス名は適宜調整してください */}
         <h3 className="card-title">送金先</h3>
-        
+
         <div className="user-info">
-          <img 
-             src={transferData.toIcon || 'https://placehold.jp/150x150.png'} 
-             alt="icon" 
-             className="user-icon" 
+          <img
+             src={transferData.toIcon || 'https://placehold.jp/150x150.png'}
+             alt="icon"
+             className="user-icon"
              style={{width: '50px', height: '50px', borderRadius: '50%'}} // 念のためスタイル
           />
           <p className="user-name">{transferData.toName} 様</p>
         </div>
         <p className="account-info">普通 {transferData.toAccount}</p>
-        
+
         <hr className="divider" />
+
+        {/*送金上限額の表示スペース  */}
+        <div className="limit-info">
+          <p className="label">送金上限額</p>
+          <p className="limit-amount">¥{myBalance.toLocaleString()}</p>
+        </div>
 
         {/* 金額入力 */}
         <div className="input-group">
@@ -117,11 +138,11 @@ const Confirm = () => {
           <div className="amount-wrapper">
             <span className="currency-symbol">¥</span>
             <input
-              type="number"
+              type="text"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0"
-              className="amount-input" 
+              onChange={handleAmountChange}
+              placeholder="金額を入力"
+              className="amount-input"
             />
           </div>
         </div>
@@ -142,7 +163,12 @@ const Confirm = () => {
       </div>
 
       <div className="button-group">
-        <button className="action-button primary" onClick={handleTransfer}>
+        {/* disabled 属性を追加し、条件が true のときにボタンを無効化 */}
+          <button
+            className={`action-button primary ${isDisabled ? 'disabled' : ''}`}
+            onClick={handleTransfer}
+            disabled={isDisabled}
+          >
           送金する
         </button>
         <button className="action-button secondary" onClick={() => navigate(-1)}>
