@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Complete.css'; 
+import '../styles/Complete.css'; 
 
-// ★画像をインポートします（ファイル名は実際のものに合わせてください）
-import checkMarkImg from './approval.png'; 
+// 画像は centralized images ディレクトリへ
+import checkMarkImg from '../images/approval.png'; 
 
 function Complete() {
   const navigate = useNavigate();

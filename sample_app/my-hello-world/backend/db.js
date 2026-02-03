@@ -2,8 +2,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-// プロジェクト直下の bbb_database.db を指定
-const dbPath = path.resolve(__dirname, 'bbb_database.db');
+// backend 配下の `db` ディレクトリ内に bbb_database.db を置く
+const dbPath = path.resolve(__dirname, 'db', 'bbb_database.db');
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
