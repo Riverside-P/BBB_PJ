@@ -15,20 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
     icon_url TEXT                 -- ①ユーザアイコン
 );
 
--- ②請求リンク情報を管理するテーブル
-CREATE TABLE IF NOT EXISTS links (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    status INTEGER DEFAULT 0 CHECK (status IN (0, 1)), -- 0:未払い, 1:支払済
-    requester TEXT,              -- 請求者（口座番号）
-    payer TEXT NOT NULL,         -- 支払者
-    amount INTEGER NOT NULL CHECK (amount >= 1), -- 請求金額（1円以上）
-    comment TEXT,                -- メッセージ
-    date DATETIME DEFAULT CURRENT_TIMESTAMP -- 作成日時
-);
-
--- 今後、ステップ5や7で必要になる transfers や requests テーブルも
--- 決まり次第、このファイルに追記して共有しましょう。
-
 -- リンク情報を管理するテーブル
 -- 外部キー制約を有効にする（セッションごとに必要）
 PRAGMA foreign_keys = ON;
