@@ -7,6 +7,9 @@ import Complete from './pages/Complete';
 import ReqHis from './pages/ReqHis';
 import Request from './pages/Request';
 
+import Link from './pages/Link';
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +20,7 @@ function App() {
         <Route path="/complete" element={<Complete />} />
         <Route path="/reqhis" element={<ReqHis />} />
         <Route path="/request" element={<Request />} />
+        <Route path="/link" element={<Link />} />
       </Routes>
     </BrowserRouter>
   );
