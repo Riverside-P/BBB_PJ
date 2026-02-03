@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './Pay.css'; 
+import '../styles/Pay.css'; 
 
-const Pay = () => {
+function Pay() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -129,7 +129,14 @@ const Pay = () => {
           <p className="limit-amount">¥{myBalance.toLocaleString()}</p>
         </div>
 
-        {/* 金額入力 */}
+        {/* ★追加3: メッセージ表示エリア */}
+        <div className="input-group" style={{ marginTop: '15px' }}>
+          <span className="label">メッセージ（任意）</span>
+        </div>
+
+        <hr className="divider" />
+
+        {/* 支払者氏名入力 */}
         <div className="input-group">
           <span className="label">支払者氏名</span>
           <div className="amount-wrapper">
@@ -142,13 +149,6 @@ const Pay = () => {
             />
           </div>
         </div>
-
-        {/* ★追加3: メッセージ表示エリア */}
-        <div className="input-group" style={{ marginTop: '15px' }}>
-          <span className="label">メッセージ（任意）</span>
-        </div>
-
-        <hr className="divider" />
 
         {/* 残高プレビュー */}
         <div className="balance-preview">
