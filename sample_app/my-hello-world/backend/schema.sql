@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- 外部キー制約を有効にする（セッションごとに必要）
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE links (
+CREATE TABLE IF NOT EXISTS links (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     
     -- 0か1のみを許容する制約
