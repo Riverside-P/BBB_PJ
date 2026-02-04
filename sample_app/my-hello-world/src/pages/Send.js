@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Send.css';
 
 function Send() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Home画面から渡されたIDを取得（取得できなければデフォルトで1）
+  const myId = location.state?.myId || 1;
+
   useEffect(() => {
-    // サーバー(3001番)からユーザー一覧（自分を除く）を取得
-    fetch('http://localhost:3001//users_excluding_self')
+    // クエリパラメータとして myId を送る
+    fetch(`http://localhost:3001/users_excluding_self?myId=${myId}`)
       .then(response => response.json())
       .then(data => {
-        console.log("取得データ:", data);
         setUsers(data);
         setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching users:', error);
+        console.error('Error:', error);
         setLoading(false);
       });
-  }, []);
+  }, [myId]); // myIdが変わったら再取得
+
 
   // クリック時の処理
   const handleUserClick = (user) => {

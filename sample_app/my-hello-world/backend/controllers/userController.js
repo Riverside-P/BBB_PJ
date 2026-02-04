@@ -10,10 +10,19 @@ exports.getAllUsers = (req, res) => {
   });
 };
 
-// 【Send.js用】ユーザー一覧を取得（自分自身 id=1 を除外）
+// 【Send.js用】ユーザー一覧を取得（自分自身を除外）
 exports.getUsersExcludingSelf = (req, res) => {
-  const sql = 'SELECT id, name, icon_url FROM users WHERE id != 1 ORDER BY id';
-  db.all(sql, [], (err, rows) => {
+  // フロントエンドから送られてきた myId を取得
+  const myId = req.query.myId;
+
+  // IDが指定されていない場合のガード（任意）
+  if (!myId) {
+    return res.status(400).json({ error: "myId is required" });
+  }
+  //変数 myId を除外する
+  const sql = 'SELECT id, name, icon_url FROM users WHERE id != ? ORDER BY id';
+
+  db.all(sql, [myId], (err, rows) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
