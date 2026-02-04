@@ -37,6 +37,9 @@ app.post('/link', linkController.insertLink);
 //詳細取得
 app.get('/link/:id', linkController.getLink);
 
+// 更新
+app.put('/link/:id', linkController.updateLink);
+
 // ヘルスチェック
 app.get('/health', (req, res) => res.json({ ok: true }));
 
