@@ -34,10 +34,11 @@ exports.getLinksByRequester = (req, res) => {
       l.amount,
       l.comment,
       l.date,
-      u_payer.name AS payer,
+      u_payer.name AS payer,       -- 名前がなければ NULL になる
       u_payer.icon_url AS payer_icon
     FROM links l
     JOIN users u_req ON l.requester = u_req.id
+    -- ★ここを LEFT JOIN にすることで、payer が空でもデータが消えません
     LEFT JOIN users u_payer ON l.payer = u_payer.id
     WHERE u_req.account_number = ?
     ORDER BY l.date DESC

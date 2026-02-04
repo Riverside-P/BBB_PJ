@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Request.css'; // 専用のスタイル
+import '../styles/Request.css';
+import { useUser } from '../UserContext'; // ★追加: Contextのインポート
 
 function Request() {
   const navigate = useNavigate();
+  const { currentUserId } = useUser(); // ★追加: 現在のユーザーIDを取得
+
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -16,9 +19,9 @@ function Request() {
     else setError('');
   };
 
-  // ★ユーザ選択画面へ遷移する処理
+  // ユーザ選択画面へ遷移する処理
   const handleGoToSelect = () => {
-    // 現在の入力内容を持って遷移する
+    // Context を導入したため、myId を state で渡す必要はなくなりました
     navigate('/payerselect', {
       state: {
         amount: amount,
@@ -27,24 +30,23 @@ function Request() {
     });
   };
 
-  // リンク作成ボタンの処理（後で実装）
+  // リンク作成ボタンの処理
   const handleCreateLink = async () => {
     const numAmount = Number(amount);
     if (!amount || numAmount < 1) {
       setError('1円以上を入力してください');
       return;
     }
-    // TODO: リンク作成の処理を後で実装
+
     const requestData = {
-      status: 0,          // 0: 未払い/請求中
-      requester: 1,       // 請求者(自分)のID
-      payer: null,        // 支払う人はまだ決まっていないのでnull
-      amount: numAmount,  // 金額
-      comment: message    // メッセージ
+      status: 0,              // 0: 未払い/請求中
+      requester: currentUserId, // ★修正: ハードコードの 1 を currentUserId に変更
+      payer: null,            // 支払う人はまだ決まっていないのでnull
+      amount: numAmount,      // 金額
+      comment: message        // メッセージ
     };
 
     try {
-      // API呼び出し
       const response = await fetch('http://localhost:3001/link', {
         method: 'POST',
         headers: {
@@ -56,14 +58,12 @@ function Request() {
       const data = await response.json();
 
       if (!response.ok) {
-        // サーバーからエラーが返ってきた場合
         throw new Error(data.error || 'リンクの作成に失敗しました');
       }
 
       console.log('リンク作成成功 ID:', data.linkId);
 
-      // 成功したら完了画面やシェア画面へ遷移
-      // 生成された linkId をURLパラメータとして渡す
+      // 成功したら生成された linkId を持って遷移
       navigate('/link', {
         state: { linkId: data.linkId }
       });

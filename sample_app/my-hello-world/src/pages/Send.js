@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Send.css';
+import { useUser } from '../UserContext';
 
 function Send() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { currentUserId } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Home画面から渡されたIDを取得（取得できなければデフォルトで1）
-  const myId = location.state?.myId || 1;
-
   useEffect(() => {
-    // クエリパラメータとして myId を送る
-    fetch(`http://localhost:3001/users_excluding_self?myId=${myId}`)
-      .then(response => response.json())
+    setLoading(true); // 念のため、フェッチ開始時に true に戻す
+
+    // 自分のIDを除外して取得
+    fetch(`http://localhost:3001/users_excluding_self?myId=${currentUserId}`)
+      .then(res => {
+        if (!res.ok) throw new Error('通信エラーが発生しました');
+        return res.json();
+      })
       .then(data => {
         setUsers(data);
-        setLoading(false);
+        setLoading(false); // ★成功：読み込み完了！
       })
-      .catch(error => {
-        console.error('Error:', error);
-        setLoading(false);
+      .catch(err => {
+        console.error("Fetch error:", err);
+        setLoading(false); // ★失敗：エラーでも「読み込み中」は解除する
       });
-  }, [myId]); // myIdが変わったら再取得
-
+  }, [currentUserId]);
 
   // クリック時の処理
   const handleUserClick = (user) => {
