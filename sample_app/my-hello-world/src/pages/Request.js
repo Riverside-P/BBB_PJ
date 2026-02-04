@@ -35,7 +35,7 @@ function Request() {
   // ★ユーザ選択画面へ遷移する処理
   const handleGoToSelect = () => {
     // 現在の入力内容を持って遷移する
-    navigate('/payer-select', { 
+    navigate('/payerselect', { 
       state: { 
         amount: amount, 
         message: message 
