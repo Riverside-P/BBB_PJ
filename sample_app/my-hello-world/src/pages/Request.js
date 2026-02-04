@@ -12,12 +12,28 @@ function Request() {
   const handleAmountChange = (e) => {
     const value = e.target.value;
     setAmount(value);
+<<<<<<< HEAD
     
     if (value && Number(value) < 1) {
       setError('1円以上を入力してください');
     } else {
       setError('');
     }
+=======
+    if (value && Number(value) < 1) setError('1円以上を入力してください');
+    else setError('');
+  };
+
+  // ★ユーザ選択画面へ遷移する処理
+  const handleGoToSelect = () => {
+    // 現在の入力内容を持って遷移する
+    navigate('/payerselect', { 
+      state: { 
+        amount: amount, 
+        message: message 
+      } 
+    });
+>>>>>>> 38ba1ed (ユーザーselect画面の作成)
   };
 
   // リンク作成ボタンの処理（後で実装）
