@@ -82,7 +82,10 @@ function Home() {
         >
           送金
         </button>
-        <button className="action-button request-button" onClick={() => navigate('/request')}>請求</button>
+
+        <button className="action-button request-button" onClick={() => navigate('/request', { state: { myId: currentUserId } })}>請求</button>
+
+
         <button
           className="action-button history-button"
           onClick={() => navigate('/reqhis', {
@@ -91,6 +94,7 @@ function Home() {
         >
           請求履歴
         </button>
+
       </div>
 
       {/* 届いている請求セクション（新規追加） */}
