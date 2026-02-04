@@ -10,6 +10,7 @@ import Request from './pages/Request';
 import Payerselect from './pages/Payerselect';
 import Link from './pages/Link';
 import Pay from './pages/Pay'; // ← 追加
+import TransferHistory from './pages/TransferHistory'; // ← 追加
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/payerselect" element={<Payerselect />} />
           <Route path="/link" element={<Link />} />
           <Route path="/pay/:linkId" element={<Pay />} /> {/* ← 追加 */}
+          <Route path="/transfer-history" element={<TransferHistory />} /> {/* ← 追加 */}
         </Routes>
       </UserProvider>
     </BrowserRouter>

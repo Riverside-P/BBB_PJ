@@ -86,12 +86,16 @@ function Home() {
 
         <button className="action-button request-button" onClick={() => navigate('/request', { state: { myId: currentUserId } })}>請求</button>
 
+        <button
+          className="action-button history-button"
+          onClick={() => navigate('/transfer-history')}
+        >
+          送金履歴
+        </button>
 
         <button
           className="action-button history-button"
-          onClick={() => navigate('/reqhis', {
-            state: { accountNumber: user.account_number } // 口座番号を渡す
-          })}
+          onClick={() => navigate('/reqhis')}
         >
           請求履歴
         </button>
