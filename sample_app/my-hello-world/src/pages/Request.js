@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocationを追加
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Request.css';
+import { useUser } from '../UserContext'; // ★追加: Contextのインポート
 
 function Request() {
   const navigate = useNavigate();
-  const location = useLocation(); // 戻ってきたデータを受け取る用
-
+  const { currentUserId } = useUser(); // ★追加: 現在のユーザーIDを取得
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
@@ -34,8 +34,18 @@ function Request() {
     else setError('');
   };
 
-  // ★ユーザ選択画面へ遷移する処理
+  // ユーザ選択画面へ遷移する処理
   const handleGoToSelect = () => {
+    // Context を導入したため、myId を state で渡す必要はなくなりました
+    navigate('/payerselect', {
+      state: {
+        amount: amount,
+        message: message
+      }
+    });
+  };
+
+  // リンク作成ボタンの処理
     // 現在の入力内容を持って遷移する
     navigate('/payerselect', { 
       state: { 
@@ -56,11 +66,11 @@ function Request() {
     }
 
     const requestData = {
-      status: 0,
-      requester: 1, 
-      payer: selectedUser ? selectedUser.id : null, 
-      amount: numAmount,
-      comment: message
+      status: 0,              // 0: 未払い/請求中
+      requester: currentUserId, // ★修正: ハードコードの 1 を currentUserId に変更
+      payer: null,            // 支払う人はまだ決まっていないのでnull
+      amount: numAmount,      // 金額
+      comment: message        // メッセージ
     };
 
     try {
@@ -70,9 +80,16 @@ function Request() {
         body: JSON.stringify(requestData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || '作成失敗');
+      if (!response.ok) {
+        throw new Error(data.error || 'リンクの作成に失敗しました');
+      }
 
-      navigate('/link', { state: { linkId: data.linkId } });
+      console.log('リンク作成成功 ID:', data.linkId);
+
+      // 成功したら生成された linkId を持って遷移
+      navigate('/link', {
+        state: { linkId: data.linkId }
+      });
     } catch (err) {
       console.error(err);
       setError(err.message);

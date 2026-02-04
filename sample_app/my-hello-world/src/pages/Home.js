@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Home.css';
+import { useUser } from '../UserContext';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const navigate = useNavigate();
 
-  const [currentUserId, setCurrentUserId] = useState(1);
+  const { currentUserId, setCurrentUserId } = useUser();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -78,7 +79,7 @@ function Home() {
       <div className="button-group">
         <button
           className="action-button send-button"
-          onClick={() => navigate('/send', { state: { myId: currentUserId } })} // IDを渡す
+          onClick={() => navigate('/send')}
         >
           送金
         </button>
