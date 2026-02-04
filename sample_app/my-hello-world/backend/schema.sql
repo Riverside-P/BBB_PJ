@@ -10,7 +10,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,           -- ③ユーザ名
-    account_number TEXT NOT NULL,  -- ②口座番号
+    account_number INTEGER NOT NULL,  -- ②口座番号
     balance INTEGER DEFAULT 0,    -- ④預金残高
     icon_url TEXT                 -- ①ユーザアイコン
 );

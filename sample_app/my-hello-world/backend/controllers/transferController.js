@@ -3,8 +3,6 @@ const db = require('../db');
 
 // ★ここ！ exports.createTransfer になっているか確認してください
 exports.createTransfer = (req, res) => {
-  const { id } = useParams()
-
   const { fromId, toId, amount } = req.body;
   console.log(`💸 送金開始: ID:${fromId} -> ID:${toId} 金額:${amount}円`);
 

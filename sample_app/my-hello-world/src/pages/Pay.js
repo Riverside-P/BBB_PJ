@@ -9,7 +9,6 @@ const Pay = () => {
 
   const [transferData, setTransferData] = useState(null); 
   const [myBalance, setMyBalance] = useState(null);       
-  const [payerName, setPayerName] = useState('');     
   const [payerData, setPayerData] = useState(null);    
 
   // 【ロジック】
@@ -19,11 +18,20 @@ const Pay = () => {
   const isDisabled = false;
 
   useEffect(() => {
+    let ignore = false;
+
     const fetchData = async () => {
       try {
         // URL指定をバッククォート ` に修正（${id}を有効化するため）
         const toRes = await fetch(`http://localhost:3001/link/${id}`);
         const toData = await toRes.json();
+
+        // 【追加】ステータスが 1（支払い済み/無効）ならホームへ戻す
+        if (toData.status === 1 && !ignore) {
+          alert("この請求リンクは既に使用済みか、無効になっています。");
+          navigate('/failed'); // ホーム画面のパスに合わせて変更してください
+          return; // ここで処理を終了し、下の setTransferData は実行させない
+        }
 
         setTransferData({
           toId: toData.requester_user_id,
@@ -32,6 +40,7 @@ const Pay = () => {
           toIcon: toData.requester_icon,
           toComment: toData.comment,
           toAmount: toData.amount,
+          toStatus: toData.status,
         });
 
       } catch (error) {
@@ -39,6 +48,10 @@ const Pay = () => {
       }
     };
     fetchData();
+
+    return () => {
+      ignore = true;
+    };
   }, [id]); // ← ここに [id] を追加！
 
   useEffect(() => {
@@ -53,13 +66,13 @@ const Pay = () => {
           toAmount: toData.balance,
         });
 
-        setMyBalance(payerData.toAmount);
-      }catch (error) {
+        setMyBalance(toData.balance);
+      } catch (error) {
         console.error("Fetch error:", error);
-      };
+      }
     };
     fetchMyData();
-  });
+  },[id]);
 
   const handleTransfer = async () => {
     if (transferData.toAmount > myBalance) return alert("残高不足のため支払えません。");
@@ -73,7 +86,7 @@ const Pay = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:3001/transfers/:id', {
+      const res = await fetch('http://localhost:3001/transfers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -157,7 +170,7 @@ const Pay = () => {
         >
           {afterBalance < 0 ? '残高不足のため支払不可' : '支払する'}
         </button>
-        <button className={styles.btnSecondary} onClick={() => navigate(-1)}>
+        <button className={styles.btnPrimary} onClick={() => navigate(-1)}>
           戻る
         </button>
       </div>

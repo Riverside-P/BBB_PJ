@@ -9,6 +9,7 @@ import Request from './pages/Request';
 
 import Link from './pages/Link';
 import Pay from './pages/Pay';
+import Failed from './pages/Failed';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/request" element={<Request />} />
         <Route path="/link" element={<Link />} />
         <Route path="/pay/:id" element={<Pay />} />
+        <Route path="/failed" element={<Failed />} />
       </Routes>
     </BrowserRouter>
   );

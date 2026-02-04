@@ -22,7 +22,7 @@ app.get('/users', userController.getAllUsers);       // 一覧
 app.get('/users/:id', userController.getUserById);   // 詳細
 
 // 送金関連の窓口 -> transferControllerにお任せ
-app.post('/transfers/:id', transferController.createTransfer); // 送金
+app.post('/transfers', transferController.createTransfer); // 送金
 
 // 請求履歴関連の窓口 -> reqHisControllerにお任せ
 app.get('/links', reqHisController.getAllLinks);                    // 全件取得

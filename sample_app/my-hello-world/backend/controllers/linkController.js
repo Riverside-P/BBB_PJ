@@ -44,22 +44,24 @@ exports.getLink = (req, res) => {
     // SQL: links(l) と users(u) を結合して、必要な変数をすべて取得
     const sql = `
         SELECT 
+            l.status,
             l.amount, 
             l.comment, 
             l.requester AS requester_id, 
+            u.id AS requester_user_id,
             u.name AS requester_name, 
             u.account_number AS requester_account, 
-            u.icon_url AS requester_icon,
-            u.id AS requester_user_id
+            u.icon_url AS requester_icon
         FROM links l
-        LEFT JOIN users u ON l.requester = u.account_number
+        LEFT JOIN users u ON l.requester = u.id
         WHERE l.id = ?
     `;
 
     db.get(sql, [id], (err, row) => {
         if (err) return res.status(500).json({ error: "DBエラーが発生しました。" });
         if (!row) return res.status(404).json({ error: "リンクが見つかりません。" });
-        
+
+        console.log(row);
         // ここで返却されるJSONにすべての変数が含まれます
         res.status(200).json(row);
     });
