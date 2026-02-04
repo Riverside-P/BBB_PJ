@@ -43,3 +43,35 @@ exports.getUserById = (req, res) => {
     res.json(row);
   });
 };
+
+// [あなた担当] ユーザーの請求統計を取得
+exports.getUserRequestStats = (req, res) => {
+  const id = req.params.id;
+  
+  // 自分が請求中の件数
+  db.get(
+    "SELECT COUNT(*) as count FROM links WHERE requester = ? AND status = 0",
+    [id],
+    (err, sentRequests) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      
+      // 自分宛の請求中の件数
+      db.get(
+        "SELECT COUNT(*) as count FROM links WHERE payer = ? AND status = 0",
+        [id],
+        (err, receivedRequests) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          
+          res.json({
+            sentPendingCount: sentRequests.count,
+            receivedPendingCount: receivedRequests.count
+          });
+        }
+      );
+    }
+  );
+};
