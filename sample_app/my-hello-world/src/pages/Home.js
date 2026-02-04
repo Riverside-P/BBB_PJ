@@ -9,6 +9,7 @@ function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [incomingRequests, setIncomingRequests] = useState([]);
   // ★1: DB内の全ユーザーを保持するステート
   const [allUsers, setAllUsers] = useState([]);
 
@@ -23,19 +24,19 @@ function Home() {
   // 選択中のユーザー情報を取得
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3001/users/${currentUserId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('ユーザー情報の取得に失敗しました');
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch(`http://localhost:3001/users/${currentUserId}`).then(res => res.json()),
+      fetch(`http://localhost:3001/users/${currentUserId}/stats`).then(res => res.json())
+    ])
+    .then(([userData, statsData]) => {
+      setUser(userData);
+      setIncomingRequests(statsData.incomingRequests);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      setLoading(false);
+    });
   }, [currentUserId]);
 
   if (loading && !user) return <div className="loading">データを読み込み中...</div>;
@@ -83,6 +84,33 @@ function Home() {
         </button>
         <button className="action-button request-button" onClick={() => navigate('/request')}>請求</button>
         <button className="action-button history-button" onClick={() => navigate('/reqhis')}>請求履歴</button>
+      </div>
+
+      {/* 届いている請求セクション（新規追加） */}
+      <div className="incoming-requests-section">
+        <h3 className="section-title">届いている請求</h3>
+        {incomingRequests.length > 0 ? (
+          incomingRequests.map((req) => (
+            <div key={req.id} className="request-item-card">
+              <div className="request-info">
+                <span className="request-sender">{req.requester_name}</span>
+                <span className="request-date">{req.date}</span>
+              </div>
+              <div className="request-main">
+                <span className="request-message">{req.comment}</span>
+                <span className="request-amount">¥{req.amount.toLocaleString()}</span>
+              </div>
+              <button 
+                className="pay-now-button" 
+                onClick={() => navigate('/send')}
+              >
+                今すぐ支払う
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="no-requests">現在、新しい請求はありません。</p>
+        )}
       </div>
     </div>
   );
