@@ -11,9 +11,11 @@ function Payerselect() {
   const currentMessage = location.state?.message || '';
   const currentSelectedUser = location.state?.selectedUser || null;
 
+  const myId = location.state?.myId || 1;
+
   useEffect(() => {
     // サーバー(3001番)からユーザー一覧を取得
-    fetch('http://localhost:3001/users')
+    fetch(`http://localhost:3001/users_excluding_self?myId=${myId}`)
       .then(response => response.json())
       .then(data => {
         console.log("取得データ:", data);
