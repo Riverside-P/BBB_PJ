@@ -16,31 +16,32 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- リンク情報を管理するテーブル
--- 外部キー制約を有効にする（セッションごとに必要）
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS links (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     
-    -- 0か1のみを許容する制約
-    -- 0ならリンクが有効、1なら無効
+    -- 0:請求中, 1:支払い済み or キャンセル
     status INTEGER CHECK (status IN (0, 1)),
     
-    -- usersテーブルのnameカラムを参照する外部キー
-    requester TEXT,
+    -- 【修正1】 usersテーブルの id カラムを参照するように変更
+    -- JSからはユーザーID(数値)が送られてくるため、ここもINTEGERにします
+    requester INTEGER,
     
-    -- NULLを許容しない
-    payer TEXT NOT NULL,
+    -- 【修正2】 リンク作成時は支払う人が未定なので、NULLを許容する（NOT NULLを削除）
+    payer TEXT,
     
-    -- 1以上かつNULLを許容しない
+    -- 金額
     amount INTEGER NOT NULL CHECK (amount >= 1),
     
-    -- 文字列型
+    -- コメント
     comment TEXT,
     
-    -- デフォルトで現在時刻が入るタイムスタンプ
+    -- 作成日時
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    -- 外部キーの設定
-    FOREIGN KEY (requester) REFERENCES users(account_number)
+    -- 【修正1の続き】 外部キーを users(id) に向ける
+    FOREIGN KEY (requester) REFERENCES users(id)
+    -- payerも将来的にはユーザーIDが入るはずなので、外部キー設定しておくと良いです（任意）
+    -- FOREIGN KEY (payer) REFERENCES users(id)
 );
