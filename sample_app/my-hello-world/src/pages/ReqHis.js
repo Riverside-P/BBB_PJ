@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/ReqHis.css';
 
 function ReqHis() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Home画面から渡された口座番号を取得
+  const accountNumber = location.state?.accountNumber;
+
   useEffect(() => {
-    // サーバーから請求履歴を取得
-    fetch('http://localhost:3001/links')
+    if (!accountNumber) {
+      console.error("口座番号が取得できませんでした");
+      setLoading(false);
+      return;
+    }
+
+    // ★サーバーのパス /links/:accountNumber に合わせて fetch
+    fetch(`http://localhost:3001/links/${accountNumber}`)
       .then((res) => {
         if (!res.ok) throw new Error('請求履歴の取得に失敗しました');
         return res.json();
       })
       .then((data) => {
-        console.log('取得した請求履歴:', data);
         setLinks(data);
         setLoading(false);
       })
@@ -23,7 +32,7 @@ function ReqHis() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [accountNumber]);
 
   // ステータスの表示テキスト
   const getStatusText = (status) => {
@@ -69,7 +78,7 @@ function ReqHis() {
                 </span>
                 <span className="link-date">{formatDate(link.date)}</span>
               </div>
-              
+
               <div className="link-body">
                 <div className="link-info">
                   <p className="link-label">請求先</p>

@@ -83,7 +83,14 @@ function Home() {
           送金
         </button>
         <button className="action-button request-button" onClick={() => navigate('/request')}>請求</button>
-        <button className="action-button history-button" onClick={() => navigate('/reqhis')}>請求履歴</button>
+        <button
+          className="action-button history-button"
+          onClick={() => navigate('/reqhis', {
+            state: { accountNumber: user.account_number } // 口座番号を渡す
+          })}
+        >
+          請求履歴
+        </button>
       </div>
 
       {/* 届いている請求セクション（新規追加） */}
@@ -100,8 +107,8 @@ function Home() {
                 <span className="request-message">{req.comment}</span>
                 <span className="request-amount">¥{req.amount.toLocaleString()}</span>
               </div>
-              <button 
-                className="pay-now-button" 
+              <button
+                className="pay-now-button"
                 onClick={() => navigate('/send')}
               >
                 今すぐ支払う
