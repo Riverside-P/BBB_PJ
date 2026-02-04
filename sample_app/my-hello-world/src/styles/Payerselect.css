@@ -120,3 +120,13 @@
 .back-button:active {
   transform: translateY(0);
 }
+
+.clear-button {
+  background-color: #ef4444;
+  color: white;
+  width: 100%;
+}
+
+.clear-button:active {
+  transform: translateY(0);
+}

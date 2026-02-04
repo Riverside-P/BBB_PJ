@@ -9,6 +9,7 @@ function Payerselect() {
   const [loading, setLoading] = useState(true);
   const currentAmount = location.state?.amount || '';
   const currentMessage = location.state?.message || '';
+  const currentSelectedUser = location.state?.selectedUser || null;
 
   useEffect(() => {
     // サーバー(3001番)からユーザー一覧を取得
@@ -71,8 +72,18 @@ function Payerselect() {
         )}
       </div>
       <div className="button-group">
+        <button className="action-button clear-button" onClick={() => navigate('/request', {
+          state: {
+            selectedUser: null,
+            amount: currentAmount,
+            message: currentMessage
+          }
+        })}>
+          選択を解除
+        </button>
         <button className="action-button back-button" onClick={() => navigate('/request', {
           state: {
+            selectedUser: currentSelectedUser,
             amount: currentAmount,
             message: currentMessage
           }
