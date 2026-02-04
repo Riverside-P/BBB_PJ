@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/ReqHis.css';
 
 function ReqHis() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Home画面から渡された口座番号を取得
+  const accountNumber = location.state?.accountNumber;
+
   useEffect(() => {
-    // サーバーから請求履歴を取得
-    fetch('http://localhost:3001/links')
+    if (!accountNumber) {
+      console.error("口座番号が取得できませんでした");
+      setLoading(false);
+      return;
+    }
+
+    // ★サーバーのパス /links/:accountNumber に合わせて fetch
+    fetch(`http://localhost:3001/links/${accountNumber}`)
       .then((res) => {
         if (!res.ok) throw new Error('請求履歴の取得に失敗しました');
         return res.json();
       })
       .then((data) => {
-        console.log('取得した請求履歴:', data);
         setLinks(data);
         setLoading(false);
       })
@@ -23,7 +32,7 @@ function ReqHis() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [accountNumber]);
 
   // ステータスの表示テキスト
   const getStatusText = (status) => {
@@ -69,14 +78,27 @@ function ReqHis() {
                 </span>
                 <span className="link-date">{formatDate(link.date)}</span>
               </div>
-              
-              <div className="link-body">
-                <div className="link-info">
-                  <p className="link-label">請求先</p>
-                  <p className="link-value">{link.payer}</p>
+
+              <div className="link-body" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* ★アイコン表示部分を追加 */}
+                <div className="payer-icon-wrapper">
+                  {link.payer_icon && link.payer_icon.startsWith('http') ? (
+                    <img src={link.payer_icon} alt={link.payer} className="history-user-icon" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                  ) : (
+                    <div className="user-icon-fallback" style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {link.payer ? link.payer[0] : '?'}
+                    </div>
+                  )}
                 </div>
-                <div className="link-amount">
-                  <p className="amount-value">¥{Number(link.amount).toLocaleString()}</p>
+
+                <div className="link-main-info" style={{ flex: 1 }}>
+                  <div className="link-info">
+                    <p className="link-label">請求先</p>
+                    <p className="link-value">{link.payer || '（未設定）'}</p>
+                  </div>
+                  <div className="link-amount">
+                    <p className="amount-value">¥{Number(link.amount).toLocaleString()}</p>
+                  </div>
                 </div>
               </div>
 
