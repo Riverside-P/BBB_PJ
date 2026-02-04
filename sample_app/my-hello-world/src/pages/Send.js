@@ -8,8 +8,8 @@ function Send() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // サーバー(3001番)からユーザー一覧を取得
-    fetch('http://localhost:3001/users')
+    // サーバー(3001番)からユーザー一覧（自分を除く）を取得
+    fetch('http://localhost:3001//users_excluding_self')
       .then(response => response.json())
       .then(data => {
         console.log("取得データ:", data);

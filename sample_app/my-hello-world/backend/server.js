@@ -19,6 +19,7 @@ app.use(express.json());
 
 // ユーザー関連の窓口 -> userControllerにお任せ
 app.get('/users', userController.getAllUsers);       // 一覧
+app.get('/users_excluding_self', userController.getUsersExcludingSelf);       // 一覧(自分を除く)
 app.get('/users/:id', userController.getUserById);   // 詳細
 
 // 送金関連の窓口 -> transferControllerにお任せ
