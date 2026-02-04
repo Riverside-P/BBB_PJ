@@ -1,53 +1,27 @@
 /* Send画面のスタイル */
 
-.app-container {
+.send-container {
   width: 90%;
   max-width: 400px; /* スマホの横幅を意識 */
   margin: 20px auto;
 }
 
-.app-title {
+.send-title {
   color: #333;
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
 }
 
-/* スキーマカード */
-.schema-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  border: 1px solid #e5e7eb;
-}
-
-.schema-content {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f9fafb;
-  padding: 15px;
-  border-radius: 8px;
-  overflow-x: auto;
-  max-height: 400px;
-  overflow-y: auto;
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
 /* ボタングループ */
-.button-group {
+.send-button-group {
   display: flex;
   gap: 10px;
   margin-top: 20px;
 }
 
 /* ユーザリスト */
-.users-list {
+.send-users-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -55,7 +29,7 @@
 }
 
 /* ユーザアイテム（ボタン） */
-.user-item {
+.send-user-item {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -71,19 +45,19 @@
   text-align: left;
 }
 
-.user-item:hover {
+.send-user-item:hover {
   border-color: #3b82f6;
   box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
   transform: translateY(-2px);
 }
 
-.user-item.selected {
+.send-user-item.selected {
   border-color: #3b82f6;
   background-color: #eff6ff;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
-.user-icon {
+.send-user-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -91,7 +65,7 @@
   flex-shrink: 0;
 }
 
-.user-icon-fallback {
+.send-user-icon-fallback {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -105,7 +79,7 @@
   font-size: 18px;
 }
 
-.user-icon-emoji {
+.send-user-icon-emoji {
   width: 48px;
   height: 48px;
   display: flex;
@@ -115,11 +89,12 @@
   font-size: 32px;
 }
 
-.user-name {
+.send-user-name {
   flex: 1;
+  color: #333;
 }
 
-.action-button {
+.send-back-button {
   flex: 1;
   padding: 15px;
   border: none;
@@ -129,20 +104,17 @@
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-}
-
-.action-button:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.back-button {
   background-color: #3b82f6;
   color: white;
   width: 100%;
 }
 
-.back-button:active {
+.send-back-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.send-back-button:active {
   transform: translateY(0);
 }

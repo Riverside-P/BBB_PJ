@@ -1,53 +1,52 @@
-/* src/pages/Confirm.module.css */
+/* Confirm��ʂ̃X�^�C�� */
 
-/* 全体の背景 */
-.container {
-  background-color: #f0f2f5;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  padding-top: 20px;
-}
-
-/* タイトル周り */
-.appTitle {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-/* 青いカードのデザイン（ホーム画面と統一） */
-.card {
+/* �S�̃R���e�i */
+.confirm-container {
   width: 90%;
   max-width: 400px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); /* 銀行っぽい紺色 */
+  margin: 20px auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+/* �^�C�g�� */
+.confirm-title {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ���J�[�h�̃f�U�C�� */
+.confirm-card {
+  width: 100%;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   color: white;
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-sizing: border-box;
   margin-bottom: 20px;
 }
 
-.cardTitle {
+.confirm-card-title {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8); /* 白の透過 */
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 15px;
   font-weight: bold;
 }
 
-/* ユーザー情報 */
-.userInfo {
+/* ���[�U�[��� */
+.confirm-user-info {
   display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
 
-.userIcon {
-  width: 40px;
-  height: 40px;
+.confirm-user-icon {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   margin-right: 12px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -55,49 +54,87 @@
   background-color: white;
 }
 
-.userName {
+.confirm-user-name {
   font-size: 18px;
   font-weight: bold;
   margin: 0;
   color: white;
 }
 
-.accountInfo {
+.confirm-account-info {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
-  margin-left: 52px;
+  margin-left: 62px;
   margin-bottom: 20px;
   letter-spacing: 1px;
 }
 
-.divider {
+.confirm-divider {
   border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2); /* 薄い白線 */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   margin: 20px 0;
 }
 
-/* 金額表示 */
-.totalRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 10px;
+/* ���������� */
+.confirm-limit-info {
+  margin-bottom: 15px;
 }
 
-.label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.amountValue {
-  font-size: 28px;
+.confirm-limit-amount {
+  font-size: 20px;
   font-weight: bold;
   color: white;
+  margin: 5px 0;
 }
 
-/* 残高ビフォーアフター（半透明の白背景で馴染ませる） */
-.balancePreview {
-  background-color: rgba(255, 255, 255, 0.15); /* ガラスっぽい半透明 */
+/* ���̓O���[�v */
+.confirm-input-group {
+  margin-bottom: 15px;
+}
+
+.confirm-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ���z���̓��b�p�[ */
+.confirm-amount-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px 15px;
+}
+
+.confirm-currency-symbol {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-right: 8px;
+}
+
+/* ���̓t�B�[���h */
+.confirm-amount-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  width: 100%;
+  text-align: right;
+}
+
+.confirm-amount-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* �c���v���r���[ */
+.confirm-balance-preview {
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 15px;
   margin-top: 20px;
@@ -105,13 +142,13 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.balanceTitle {
+.confirm-balance-preview p {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.8);
   margin: 0 0 8px 0;
 }
 
-.balanceRow {
+.confirm-balance-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -121,39 +158,24 @@
   color: white;
 }
 
-.balanceBefore {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: line-through;
-  font-size: 14px;
-}
-
-.arrow {
+.confirm-arrow {
   color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
 }
 
-.balanceAfter {
-  color: #fbbf24; /* 強調色の黄色（青背景に映える色） */
-  font-size: 18px;
-}
-
-/* ボタン（白背景・青文字にして目立たせる） */
-.buttonGroup {
-  width: 90%;
-  max-width: 400px;
-  margin-top: 10px;
+/* �{�^���O���[�v */
+.confirm-button-group {
+  width: 100%;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.btnPrimary {
+.confirm-action-button {
   width: 100%;
   padding: 16px;
   border-radius: 12px;
-  background-color: white; /* 背景を白に */
-  color: #1e3a8a;          /* 文字を紺色に */
-  border: none;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -161,43 +183,32 @@
   transition: transform 0.1s;
 }
 
-.btnPrimary:active {
+.confirm-action-button.confirm-primary {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+}
+
+.confirm-action-button.confirm-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.confirm-action-button.confirm-primary.disabled,
+.confirm-action-button.confirm-primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.confirm-action-button.confirm-primary:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.btnSecondary {
-  width: 100%;
-  padding: 16px;
-  border-radius: 12px;
+.confirm-action-button.confirm-secondary {
   background-color: transparent;
-  color: #666; /* 背景が白(body)の上に乗るのでグレー */
+  color: #666;
   border: 2px solid #ddd;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-/* --- 追加: 金額入力フォームのデザイン --- */
-.amountInput {
-  background: transparent;     /* 背景透明 */
-  border: none;                /* 枠なし */
-  border-bottom: 2px solid rgba(255, 255, 255, 0.5); /* 下線 */
-  color: white;
-  font-size: 32px;             /* 大きく */
-  font-weight: bold;
-  width: 150px;
-  text-align: right;           /* 右寄せ */
-  outline: none;               /* 青枠消し */
-  padding: 5px;
-}
-
-.amountInput:focus {
-  border-bottom: 2px solid white; /* 入力中は白線を濃く */
-}
-
-/* 数字入力欄の矢印を消す（見た目をスッキリさせる） */
-.amountInput::-webkit-outer-spin-button,
-.amountInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.confirm-action-button.confirm-secondary:hover {
+  background-color: #f3f4f6;
 }

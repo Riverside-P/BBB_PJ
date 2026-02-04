@@ -98,74 +98,73 @@ const Confirm = () => {
 
   // 読み込み中の表示
   if (!transferData || myBalance === null) {
-    return <div className="app-container"><p>Loading...</p></div>;
+    return <div className="confirm-container"><p>Loading...</p></div>;
   }
 
   // 送金後の残高計算
   const afterBalance = myBalance - Number(amount);
 
   return (
-    <div className="app-container">
-      <h2 className="app-title">送金内容の入力</h2>
+    <div className="confirm-container">
+      <h2 className="confirm-title">送金内容の入力</h2>
 
-      <div className="card">
-        <h3 className="card-title">送金先</h3>
+      <div className="confirm-card">
+        <h3 className="confirm-card-title">送金先</h3>
 
-        <div className="user-info">
+        <div className="confirm-user-info">
           <img
             src={transferData.toIcon || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}
             alt="icon"
-            className="user-icon"
-            style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+            className="confirm-user-icon"
           />
-          <p className="user-name">{transferData.toName} 様</p>
+          <p className="confirm-user-name">{transferData.toName} 様</p>
         </div>
-        <p className="account-info">普通 {transferData.toAccount}</p>
+        <p className="confirm-account-info">普通 {transferData.toAccount}</p>
 
-        <hr className="divider" />
+        <hr className="confirm-divider" />
 
         {/* 送金上限（現在の自分の残高） */}
-        <div className="limit-info">
-          <p className="label">送金可能額（残高）</p>
-          <p className="limit-amount">¥{myBalance.toLocaleString()}</p>
+        <div className="confirm-limit-info">
+          <p className="confirm-label">送金可能額（残高）</p>
+          <p className="confirm-limit-amount">¥{myBalance.toLocaleString()}</p>
         </div>
 
         {/* 金額入力エリア */}
-        <div className="input-group">
-          <span className="label">送金金額</span>
-          <div className="amount-wrapper">
-            <span className="currency-symbol">¥</span>
+        <div className="confirm-input-group">
+          <span className="confirm-label">送金金額</span>
+          <div className="confirm-amount-wrapper">
+            <span className="confirm-currency-symbol">¥</span>
             <input
               type="text"
               value={amount}
               onChange={handleAmountChange}
               placeholder="金額を入力"
-              className="amount-input"
+              className="confirm-amount-input"
             />
           </div>
         </div>
 
         {/* メッセージ入力エリア */}
-        <div className="input-group" style={{ marginTop: '15px' }}>
-          <span className="label">メッセージ（任意）</span>
+        <div className="confirm-input-group" style={{ marginTop: '15px' }}>
+          <span className="confirm-label">メッセージ（任意）</span>
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="送金相手へのメモ"
-            className="amount-input"
+            className="confirm-amount-input"
             style={{ fontSize: '16px', textAlign: 'left', paddingLeft: '10px' }}
           />
         </div>
 
-        <hr className="divider" />
+        <hr className="confirm-divider" />
 
         {/* 残高変化のプレビュー */}
-        <div className="balance-preview">
+        <div className="confirm-balance-preview">
           <p>送金後の残高（目安）</p>
-          <div className="balance-row">
+          <div className="confirm-balance-row">
             <span>¥{myBalance.toLocaleString()}</span>
-            <span className="arrow">→</span>
+            <span className="confirm-arrow">→</span>
             <span style={{ color: afterBalance < 0 ? '#ff4d4f' : '#f39c12', fontWeight: 'bold' }}>
               ¥{afterBalance.toLocaleString()}
             </span>
@@ -173,15 +172,15 @@ const Confirm = () => {
         </div>
       </div>
 
-      <div className="button-group">
+      <div className="confirm-button-group">
         <button
-          className={`action-button primary ${isDisabled ? 'disabled' : ''}`}
+          className={`confirm-action-button confirm-primary ${isDisabled ? 'disabled' : ''}`}
           onClick={handleTransfer}
           disabled={isDisabled}
         >
           送金する
         </button>
-        <button className="action-button secondary" onClick={() => navigate(-1)}>
+        <button className="confirm-action-button confirm-secondary" onClick={() => navigate(-1)}>
           戻る
         </button>
       </div>

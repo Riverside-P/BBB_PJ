@@ -1,0 +1,218 @@
+/* Pay画面のスタイル */
+
+.pay-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.pay-title {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 青いカード */
+.pay-card {
+  width: 100%;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.pay-label {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.pay-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 20px 0;
+}
+
+/* 請求者セクション */
+.pay-requester-section {
+  margin-bottom: 5px;
+}
+
+.pay-requester-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pay-requester-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.pay-requester-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 金額セクション */
+.pay-amount-section {
+  text-align: center;
+}
+
+.pay-amount {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* メッセージセクション */
+.pay-message-section {
+  margin-bottom: 5px;
+}
+
+.pay-message {
+  font-size: 16px;
+  margin: 5px 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* 支払い者セクション */
+.pay-payer-section {
+  margin-bottom: 10px;
+}
+
+.pay-payer-name-fixed {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.pay-payer-input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.pay-payer-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pay-payer-input:disabled {
+  opacity: 0.6;
+}
+
+/* 残高表示 */
+.pay-balance-display {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.pay-balance-display .insufficient {
+  color: #fca5a5;
+  font-weight: bold;
+}
+
+/* エラーメッセージ */
+.pay-error-message {
+  color: #ef4444;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.pay-error {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.pay-error p {
+  color: #ef4444;
+  margin-bottom: 20px;
+}
+
+.pay-error button {
+  padding: 12px 24px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ボタングループ */
+.pay-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pay-button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.pay-button.primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.pay-button.primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.pay-button.primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.pay-button.secondary {
+  background-color: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.pay-button.secondary:hover {
+  background-color: #f3f4f6;
+}
+
+.pay-button.paid {
+  background-color: #10b981;
+  color: white;
+  cursor: default;
+}
+
+.pay-button.insufficient {
+  background-color: #9ca3af;
+  color: white;
+  cursor: not-allowed;
+}

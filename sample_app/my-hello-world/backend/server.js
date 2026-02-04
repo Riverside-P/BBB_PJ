@@ -7,6 +7,7 @@ const userController = require('./controllers/userController');
 const transferController = require('./controllers/transferController');
 const reqHisController = require('./controllers/ReqHisController');
 const linkController = require('./controllers/linkController');
+const payController = require('./controllers/payController');
 
 const app = express();
 const PORT = 3001;
@@ -36,6 +37,10 @@ app.post('/link', linkController.insertLink);
 
 //詳細取得
 app.get('/link/:id', linkController.getLink);
+
+// 支払い関連の窓口 -> payControllerにお任せ
+app.get('/pay/:id', payController.getLinkWithRequester);  // リンク情報と請求者情報を取得
+app.post('/pay/:id', payController.processPayment);       // 支払い処理
 
 // ヘルスチェック
 app.get('/health', (req, res) => res.json({ ok: true }));

@@ -8,7 +8,7 @@ import Complete from './pages/Complete';
 import ReqHis from './pages/ReqHis';
 import Request from './pages/Request';
 import Payerselect from './pages/Payerselect';
-
+import Pay from './pages/Pay';
 import Link from './pages/Link';
 
 
@@ -25,6 +25,7 @@ function App() {
           <Route path="/request" element={<Request />} />
           <Route path="/payerselect" element={<Payerselect />} />
           <Route path="/link" element={<Link />} />
+          <Route path="/pay/:linkId" element={<Pay />} />
         </Routes>
       </UserProvider>
     </BrowserRouter>
