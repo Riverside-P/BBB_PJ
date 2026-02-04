@@ -28,7 +28,6 @@ const Pay = () => {
 
         // 【追加】ステータスが 1（支払い済み/無効）ならホームへ戻す
         if (toData.status === 1 && !ignore) {
-          alert("この請求リンクは既に使用済みか、無効になっています。");
           navigate('/failed'); // ホーム画面のパスに合わせて変更してください
           return; // ここで処理を終了し、下の setTransferData は実行させない
         }
@@ -93,7 +92,18 @@ const Pay = () => {
       });
 
       if (res.ok) {
-        navigate('/complete'); 
+        // 2. 送金が成功したら、リンクのステータスを 1 に更新する 【ここを追加】
+        const statusRes = await fetch(`http://localhost:3001/link/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 1 }), // ステータスを1に
+        });
+
+        if(statusRes.ok){
+          navigate('/complete');
+        } else {
+          alert("送金は完了しましたが、リンクの無効化に失敗しました。")
+        }
       } else {
         const errorData = await res.json();
         alert(errorData.error || "エラーが発生しました");

@@ -66,3 +66,18 @@ exports.getLink = (req, res) => {
         res.status(200).json(row);
     });
 };
+
+exports.updateLinkStatus = (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; // フロントから 1 が送られてくる想定
+
+    const sql = `UPDATE links SET status = ? WHERE id = ?`;
+
+    db.run(sql, [status, id], function (err) {
+        if (err) {
+            console.error("Update Error:", err.message);
+            return res.status(500).json({ error: "ステータスの更新に失敗しました。" });
+        }
+        res.status(200).json({ message: "ステータスを更新しました。" });
+    });
+};
