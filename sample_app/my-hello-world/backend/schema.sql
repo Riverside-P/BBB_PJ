@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS links (
     -- 【修正2】 リンク作成時は支払う人が未定なので、NULLを許容する（NOT NULLを削除）
     payer INTEGER,  -- ← TEXT → INTEGER に変更、NULL許容のまま
     
+    -- 匿名支払い時の支払者名（payerがNULLの場合に使用）
+    payer_name TEXT,
+    
     -- 金額
     amount INTEGER NOT NULL CHECK (amount >= 1),
     

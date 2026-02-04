@@ -34,7 +34,7 @@ exports.getLinksByRequester = (req, res) => {
       l.amount,
       l.comment,
       l.date,
-      u_payer.name AS payer,       -- 名前がなければ NULL になる
+      COALESCE(u_payer.name, l.payer_name) AS payer,  -- ユーザー名がなければpayer_nameを使用
       u_payer.icon_url AS payer_icon
     FROM links l
     JOIN users u_req ON l.requester = u_req.id

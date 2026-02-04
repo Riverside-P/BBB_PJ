@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/Pay.css';
-import { useUser } from '../UserContext';
 
 function Pay() {
   const { linkId } = useParams();
   const navigate = useNavigate();
-  const { currentUserId } = useUser();
 
   const [linkData, setLinkData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,16 +25,17 @@ function Pay() {
         const linkInfo = await linkRes.json();
         setLinkData(linkInfo);
 
-        // payer指定がある場合、またはログインユーザーがいる場合は残高を取得
-        if (linkInfo.payer || currentUserId) {
-          const userId = linkInfo.payer || currentUserId;
-          const balanceRes = await fetch(`http://localhost:3001/users/${userId}`);
+        // payer指定がある場合のみ、そのユーザーの残高と名前を取得
+        // payer指定がない場合は匿名支払い（名前入力のみ）
+        if (linkInfo.payer) {
+          const balanceRes = await fetch(`http://localhost:3001/users/${linkInfo.payer}`);
           if (balanceRes.ok) {
             const userData = await balanceRes.json();
             setUserBalance(userData.balance);
             setPayerName(userData.name);
           }
         }
+        // payer指定がない場合は、userBalanceはnullのまま、payerNameは空のまま
       } catch (err) {
         console.error(err);
         setError(err.message);
@@ -46,7 +45,7 @@ function Pay() {
     };
 
     fetchData();
-  }, [linkId, currentUserId]);
+  }, [linkId]);
 
   // 支払い処理
   const handlePayment = async () => {
@@ -67,7 +66,9 @@ function Pay() {
     setError('');
 
     try {
-      const payerId = linkData.payer || currentUserId || null;
+      // payer指定がある場合のみpayerIdを送る
+      // payer指定がない場合はnull（匿名支払い）
+      const payerId = linkData.payer || null;
       
       const res = await fetch(`http://localhost:3001/pay/${linkId}`, {
         method: 'POST',

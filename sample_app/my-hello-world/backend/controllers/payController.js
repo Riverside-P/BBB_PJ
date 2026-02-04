@@ -104,13 +104,13 @@ const processPayment = (req, res) => {
           else console.log(`請求者(${requesterId})の残高を${amount}増やしました（匿名支払い）`);
         });
         
-        // リンクのステータスを支払い済み(1)に更新
-        db.run('UPDATE links SET status = 1 WHERE id = ?', [linkId], function(err) {
+        // リンクのステータスを支払い済み(1)に更新し、payer_nameを保存
+        db.run('UPDATE links SET status = 1, payer_name = ? WHERE id = ?', [payerName, linkId], function(err) {
           if (err) {
             console.error('リンクステータス更新エラー:', err);
             return res.status(500).json({ error: '支払い処理に失敗しました' });
           }
-          console.log(`リンク(${linkId})のステータスを支払い済みに更新しました（匿名支払い）`);
+          console.log(`リンク(${linkId})のステータスを支払い済みに更新しました（匿名支払い: ${payerName}）`);
           res.json({ success: true, message: '支払いが完了しました', payerName: payerName });
         });
       });
