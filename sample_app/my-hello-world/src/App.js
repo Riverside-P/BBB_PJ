@@ -22,7 +22,7 @@ function App() {
         <Route path="/reqhis" element={<ReqHis />} />
         <Route path="/request" element={<Request />} />
         <Route path="/link" element={<Link />} />
-        <Route path="/pay" element={<Pay />} />
+        <Route path="/pay/:id" element={<Pay />} />
       </Routes>
     </BrowserRouter>
   );

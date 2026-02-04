@@ -1,14 +1,13 @@
 // src/pages/Pay.js
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from '../styles/Pay.module.css'; 
 
 const Pay = () => {
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const location = useLocation();
-
-  // 前の画面から渡されたユーザー情報
-  const { user } = location.state || {};
 
   const [transferData, setTransferData] = useState(null); 
   const [myBalance, setMyBalance] = useState(null);       
@@ -27,35 +26,15 @@ const Pay = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (user) {
-          setTransferData({
-            toId: user.id,
-            toName: user.name,
-            toAccount: user.account_number || '****', 
-            toIcon: user.icon_url,
-          });
-        } else {
-          const toRes = await fetch('http://localhost:3001/users/2');
-          const toData = await toRes.json();
-          setTransferData({
-            toId: toData.id,
-            toName: toData.name,
-            toAccount: toData.account_number,
-            toIcon: toData.icon_url,
-          });
-        }
-
-        const fromRes = await fetch('http://localhost:3001/users/1');
-        const fromData = await fromRes.json();
-        setMyBalance(fromData.balance);
-
-      } catch (err) {
-        console.error("データ取得エラー:", err);
-      }
+        const toRes = await fetch('http://localhost:3001/links/${id}');
+        const toData = await toRes.json();
+        setTransferData({
+          toId: toData.id,
+          toName: toData.requester,
+        });
     };
     fetchData();
-  }, [user]);
+  });
 
   const handleTransfer = async () => {
     if (DUMMY_AMOUNT > myBalance) return alert("残高不足のため支払えません。");
