@@ -21,15 +21,50 @@ function Request() {
   };
 
   // リンク作成ボタンの処理（後で実装）
-  const handleCreateLink = () => {
+  const handleCreateLink = async () => {
     const numAmount = Number(amount);
     if (!amount || numAmount < 1) {
       setError('1円以上を入力してください');
       return;
     }
     // TODO: リンク作成の処理を後で実装
-    console.log('リンク作成:', { amount: numAmount, message });
-    alert('リンク作成機能は後で実装します');
+    const requestData = {
+      status: 0,          // 0: 未払い/請求中
+      requester: 1,       // 請求者(自分)のID
+      payer: null,        // 支払う人はまだ決まっていないのでnull
+      amount: numAmount,  // 金額
+      comment: message    // メッセージ
+    };
+
+    try {
+      // API呼び出し
+      const response = await fetch('http://localhost:3001/link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // サーバーからエラーが返ってきた場合
+        throw new Error(data.error || 'リンクの作成に失敗しました');
+      }
+
+      console.log('リンク作成成功 ID:', data.linkId);
+      
+      // 成功したら完了画面やシェア画面へ遷移
+      // 生成された linkId をURLパラメータとして渡す
+      navigate('/link', { 
+        state: { linkId: data.linkId } 
+      });
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message || '通信エラーが発生しました');
+    }
   };
 
   return (
