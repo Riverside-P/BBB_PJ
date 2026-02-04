@@ -4,5 +4,4 @@ INSERT INTO users (name, account_number, balance, icon_url) VALUES
 ('鈴木 一郎', '987-6543-21', 50000, 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png');
 
 INSERT INTO links (status, requester, payer, amount, comment) VALUES 
-(0, '123-4567-89', '田中太郎', 5000, '飲み会代'),
-(1, '123-4567-89', '山田花子', 3000, 'ランチ代');
+(0, 1, 2, 5000, '飲み会代');
