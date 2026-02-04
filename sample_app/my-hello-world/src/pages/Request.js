@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // ★useEffectを追加
+import { useNavigate, useLocation } from 'react-router-dom'; // ★useLocationを追加
 import '../styles/Request.css';
-import { useUser } from '../UserContext'; // ★追加: Contextのインポート
+import { useUser } from '../UserContext';
 
 function Request() {
   const navigate = useNavigate();
-  const { currentUserId } = useUser(); // ★追加: 現在のユーザーIDを取得
+  const location = useLocation(); // ★locationを取得
+  const { currentUserId } = useUser();
   const [amount, setAmount] = useState('');
   const [message, setMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
@@ -13,14 +14,12 @@ function Request() {
 
   const myId = location.state?.myId || 1;
 
-  // ★画面が表示された時に、戻ってきたデータがあればセットする
+  // 画面が表示された時に、戻ってきたデータがあればセットする
   useEffect(() => {
     if (location.state) {
-      // PayerSelectから戻ってきた場合
       if (location.state.selectedUser) {
         setSelectedUser(location.state.selectedUser);
       }
-      // 金額やメッセージも復元（undefinedチェックを行う）
       if (location.state.amount !== undefined) setAmount(location.state.amount);
       if (location.state.message !== undefined) setMessage(location.state.message);
     }
@@ -36,28 +35,17 @@ function Request() {
 
   // ユーザ選択画面へ遷移する処理
   const handleGoToSelect = () => {
-    // Context を導入したため、myId を state で渡す必要はなくなりました
     navigate('/payerselect', {
       state: {
+        selectedUser: selectedUser, // 現在の選択状態も渡す
         amount: amount,
-        message: message
+        message: message,
+        myId: myId
       }
     });
   };
 
-  // リンク作成ボタンの処理
-    // 現在の入力内容を持って遷移する
-    navigate('/payerselect', { 
-      state: { 
-        selectedUser: selectedUser,
-        amount: amount, 
-        message: message ,
-        myId: myId
-      } 
-    });
-  };
-
-  // リンク作成処理（変更なし）
+  // リンク作成処理
   const handleCreateLink = async () => {
     const numAmount = Number(amount);
     if (!amount || numAmount < 1) {
@@ -66,11 +54,11 @@ function Request() {
     }
 
     const requestData = {
-      status: 0,              // 0: 未払い/請求中
-      requester: currentUserId, // ★修正: ハードコードの 1 を currentUserId に変更
-      payer: null,            // 支払う人はまだ決まっていないのでnull
-      amount: numAmount,      // 金額
-      comment: message        // メッセージ
+      status: 0,
+      requester: currentUserId,
+      payer: selectedUser ? selectedUser.id : null, // ★選択されたユーザがいればそのIDをセット
+      amount: numAmount,
+      comment: message
     };
 
     try {
@@ -86,7 +74,6 @@ function Request() {
 
       console.log('リンク作成成功 ID:', data.linkId);
 
-      // 成功したら生成された linkId を持って遷移
       navigate('/link', {
         state: { linkId: data.linkId }
       });
@@ -96,7 +83,7 @@ function Request() {
     }
   };
 
-  // アイコン表示用ヘルパー（PayerSelectと同じロジック）
+  // アイコン表示用ヘルパー
   const renderUserIcon = (iconUrl, userName) => {
     if (iconUrl && typeof iconUrl === 'string' && (iconUrl.startsWith('http://') || iconUrl.startsWith('https://'))) {
       return <img src={iconUrl} alt={userName} className="user-icon" />;
@@ -112,7 +99,6 @@ function Request() {
       <h2 className="app-title">請求画面</h2>
 
       <div className="card">
-        {/* 金額入力 */}
         <div className="input-group">
           <span className="label">請求金額</span>
           <div className="amount-wrapper">
@@ -131,7 +117,6 @@ function Request() {
 
         <hr className="divider" />
 
-        {/* メッセージ入力 */}
         <div className="input-group">
           <span className="label">メッセージ（任意）</span>
           <input
@@ -145,12 +130,11 @@ function Request() {
 
         <hr className="divider" />
 
-        {/* ★請求先指定エリア */}
         <div className="input-group">
           <span className="label">請求先指定（任意）</span>
-          <button 
+          <button
             className={`select-user-btn ${selectedUser ? 'selected' : ''}`}
-            onClick={handleGoToSelect} // ★ページ遷移関数を呼ぶ
+            onClick={handleGoToSelect}
           >
             {selectedUser ? (
               <div className="selected-user-display">
@@ -166,8 +150,8 @@ function Request() {
       </div>
 
       <div className="button-group">
-        <button 
-          className="action-button primary" 
+        <button
+          className="action-button primary"
           onClick={handleCreateLink}
           disabled={!amount || Number(amount) < 1}
         >
