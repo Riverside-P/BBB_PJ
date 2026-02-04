@@ -114,7 +114,7 @@ function Home() {
               </div>
               <button
                 className="pay-now-button"
-                onClick={() => navigate('/send')}
+                onClick={() => navigate(`/pay/${req.id}`)} // ← 修正
               >
                 今すぐ支払う
               </button>
