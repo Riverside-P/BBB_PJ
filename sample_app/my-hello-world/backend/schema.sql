@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS links (
     requester INTEGER,
     
     -- 【修正2】 リンク作成時は支払う人が未定なので、NULLを許容する（NOT NULLを削除）
-    payer TEXT,
+    payer INTEGER,  -- ← TEXT → INTEGER に変更、NULL許容のまま
     
     -- 金額
     amount INTEGER NOT NULL CHECK (amount >= 1),
@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS links (
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     -- 【修正1の続き】 外部キーを users(id) に向ける
-    FOREIGN KEY (requester) REFERENCES users(id)
-    -- payerも将来的にはユーザーIDが入るはずなので、外部キー設定しておくと良いです（任意）
-    -- FOREIGN KEY (payer) REFERENCES users(id)
+    FOREIGN KEY (requester) REFERENCES users(id),
+    FOREIGN KEY (payer) REFERENCES users(id)  -- ← 外部キー制約を追加
 );

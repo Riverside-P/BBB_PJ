@@ -1,38 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../styles/Confirm.css'; 
-
+import '../styles/Confirm.css';
+import { useUser } from '../UserContext'; // Contextのインポート
 
 const Confirm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { currentUserId } = useUser(); // Contextから「自分」のIDを取得
 
+  // 前の画面から渡された送金先ユーザー情報
   const { user } = location.state || {};
 
-  const [transferData, setTransferData] = useState(null); // 相手
-  const [myBalance, setMyBalance] = useState(null);       // 自分
-  const [amount, setAmount] = useState('');               // 金額
-  // ★追加1: メッセージ用のステート (初期値は空文字)
-  const [message, setMessage] = useState('');
+  const [transferData, setTransferData] = useState(null); // 送金先情報
+  const [myBalance, setMyBalance] = useState(null);       // 自分の残高
+  const [amount, setAmount] = useState('');               // 送金金額
+  const [message, setMessage] = useState('');             // 任意メッセージ
 
-  // ボタンを無効にする条件を定義
+  // ボタンの無効化条件
   const isDisabled = !amount || Number(amount) <= 0;
 
-
-  // 入力文字数を制限するハンドラー
+  // 金額入力ハンドラー（数字のみ・20桁制限）
   const handleAmountChange = (e) => {
-  const value = e.target.value;
-
-  // 数字（0-9）のみを許可し、かつ20桁以内に制限する
-  // ^\d*$ は「空文字、または数字のみ」にマッチします
-  if (/^\d*$/.test(value) && value.length <= 20) {
-    setAmount(value);
-  }
-};
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && value.length <= 20) {
+      setAmount(value);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 1. 送金先データのセット
         if (user) {
           setTransferData({
             toId: user.id,
@@ -41,7 +39,7 @@ const Confirm = () => {
             toIcon: user.icon_url,
           });
         } else {
-          // フォールバック
+          // 直リンクなどでデータがない場合のフォールバック（デバッグ用）
           const toRes = await fetch('http://localhost:3001/users/2');
           const toData = await toRes.json();
           setTransferData({
@@ -52,7 +50,9 @@ const Confirm = () => {
           });
         }
 
-        const fromRes = await fetch('http://localhost:3001/users/1');
+        // 2. 自分の残高データを Context の ID を元に取得
+        const fromRes = await fetch(`http://localhost:3001/users/${currentUserId}`);
+        if (!fromRes.ok) throw new Error('残高の取得に失敗しました');
         const fromData = await fromRes.json();
         setMyBalance(fromData.balance);
 
@@ -61,21 +61,20 @@ const Confirm = () => {
       }
     };
     fetchData();
-  }, [user]);
+  }, [user, currentUserId]); // currentUserId が変われば再取得
 
-  // 送金ボタン処理
+  // 送金ボタン実行処理
   const handleTransfer = async () => {
     const sendAmount = Number(amount);
     if (sendAmount <= 0) return alert("金額を入力してください");
     if (sendAmount > myBalance) return alert("残高不足です");
 
-
-    // ★追加2: 送信データに message を含める
+    // リクエストボディの組み立て
     const requestBody = {
-      fromId: 1,
-      toId: transferData.toId,
+      fromId: currentUserId,   // ログイン中の自分のID
+      toId: transferData.toId, // 相手のID
       amount: sendAmount,
-      message: message // サーバー側で受け取る準備が必要です
+      message: message
     };
 
     try {
@@ -86,21 +85,23 @@ const Confirm = () => {
       });
 
       if (res.ok) {
-        navigate('/complete');
+        navigate('/complete'); // 完了画面へ
       } else {
         const errorData = await res.json();
-        alert(errorData.error || "エラーが発生しました");
+        alert(errorData.error || "送金に失敗しました");
       }
     } catch (error) {
       console.error(error);
-      alert("通信エラー");
+      alert("通信エラーが発生しました");
     }
   };
 
+  // 読み込み中の表示
   if (!transferData || myBalance === null) {
     return <div className="app-container"><p>Loading...</p></div>;
   }
 
+  // 送金後の残高計算
   const afterBalance = myBalance - Number(amount);
 
   return (
@@ -112,11 +113,10 @@ const Confirm = () => {
 
         <div className="user-info">
           <img
-             src={transferData.toIcon || 'https://placehold.jp/150x150.png'}
-             alt="icon"
-             className="user-icon"
-             style={{width: '50px', height: '50px', borderRadius: '50%'}} // 念のためスタイル
-
+            src={transferData.toIcon || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}
+            alt="icon"
+            className="user-icon"
+            style={{ width: '50px', height: '50px', borderRadius: '50%' }}
           />
           <p className="user-name">{transferData.toName} 様</p>
         </div>
@@ -124,13 +124,13 @@ const Confirm = () => {
 
         <hr className="divider" />
 
-        {/*送金上限額の表示スペース  */}
+        {/* 送金上限（現在の自分の残高） */}
         <div className="limit-info">
-          <p className="label">送金上限額</p>
+          <p className="label">送金可能額（残高）</p>
           <p className="limit-amount">¥{myBalance.toLocaleString()}</p>
         </div>
 
-        {/* 金額入力 */}
+        {/* 金額入力エリア */}
         <div className="input-group">
           <span className="label">送金金額</span>
           <div className="amount-wrapper">
@@ -145,28 +145,28 @@ const Confirm = () => {
           </div>
         </div>
 
-        {/* ★追加3: メッセージ入力エリア */}
+        {/* メッセージ入力エリア */}
         <div className="input-group" style={{ marginTop: '15px' }}>
           <span className="label">メッセージ（任意）</span>
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder=""
-            className="amount-input" // 既存のクラスを流用（必要ならCSS変更）
+            placeholder="送金相手へのメモ"
+            className="amount-input"
             style={{ fontSize: '16px', textAlign: 'left', paddingLeft: '10px' }}
           />
         </div>
 
         <hr className="divider" />
 
-        {/* 残高プレビュー */}
+        {/* 残高変化のプレビュー */}
         <div className="balance-preview">
-          <p>送金後の残高</p>
+          <p>送金後の残高（目安）</p>
           <div className="balance-row">
             <span>¥{myBalance.toLocaleString()}</span>
             <span className="arrow">→</span>
-            <span style={{ color: afterBalance < 0 ? 'red' : 'orange' }}>
+            <span style={{ color: afterBalance < 0 ? '#ff4d4f' : '#f39c12', fontWeight: 'bold' }}>
               ¥{afterBalance.toLocaleString()}
             </span>
           </div>
@@ -174,12 +174,11 @@ const Confirm = () => {
       </div>
 
       <div className="button-group">
-        {/* disabled 属性を追加し、条件が true のときにボタンを無効化 */}
-          <button
-            className={`action-button primary ${isDisabled ? 'disabled' : ''}`}
-            onClick={handleTransfer}
-            disabled={isDisabled}
-          >
+        <button
+          className={`action-button primary ${isDisabled ? 'disabled' : ''}`}
+          onClick={handleTransfer}
+          disabled={isDisabled}
+        >
           送金する
         </button>
         <button className="action-button secondary" onClick={() => navigate(-1)}>

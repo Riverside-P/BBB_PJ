@@ -1,49 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ReqHis.css';
+import { useUser } from '../UserContext'; // Context のインポート
 
 function ReqHis() {
   const navigate = useNavigate();
+  const { currentUserId } = useUser(); // Context から現在のユーザーIDを取得
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // サーバーから請求履歴を取得
-    fetch('http://localhost:3001/links')
-      .then((res) => {
-        if (!res.ok) throw new Error('請求履歴の取得に失敗しました');
-        return res.json();
-      })
-      .then((data) => {
-        console.log('取得した請求履歴:', data);
-        setLinks(data);
+    const fetchHistory = async () => {
+      if (!currentUserId) return;
+      setLoading(true);
+
+      try {
+        // 1. まずは自分のユーザー情報を取得して「口座番号」を特定する
+        const userRes = await fetch(`http://localhost:3001/users/${currentUserId}`);
+        if (!userRes.ok) throw new Error('ユーザー情報の取得に失敗しました');
+        const userData = await userRes.json();
+
+        const accountNumber = userData.account_number;
+
+        // 2. 特定した口座番号を使って、既存のサーバーエンドポイントを叩く
+        const historyRes = await fetch(`http://localhost:3001/links/${accountNumber}`);
+        if (!historyRes.ok) throw new Error('請求履歴の取得に失敗しました');
+        const historyData = await historyRes.json();
+
+        console.log(`口座番号 ${accountNumber} の履歴を取得しました:`, historyData);
+        setLinks(historyData);
+      } catch (err) {
+        console.error("履歴取得プロセスでエラーが発生しました:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+      }
+    };
 
-  // ステータスの表示テキスト
-  const getStatusText = (status) => {
-    return status === 0 ? '未払い' : '支払済';
-  };
+    fetchHistory();
+  }, [currentUserId]);
 
-  // ステータスのクラス名
-  const getStatusClass = (status) => {
-    return status === 0 ? 'status-pending' : 'status-paid';
-  };
+  // ステータス表示のヘルパー関数
+  const getStatusText = (status) => status === 0 ? '未払い' : '支払済';
+  const getStatusClass = (status) => status === 0 ? 'status-pending' : 'status-paid';
 
-  // 日付のフォーマット
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit'
     });
   };
 
@@ -69,14 +73,31 @@ function ReqHis() {
                 </span>
                 <span className="link-date">{formatDate(link.date)}</span>
               </div>
-              
-              <div className="link-body">
-                <div className="link-info">
-                  <p className="link-label">請求先</p>
-                  <p className="link-value">{link.payer}</p>
+
+              <div className="link-body" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div className="payer-icon-wrapper">
+                  {link.payer_icon && link.payer_icon.startsWith('http') ? (
+                    <img
+                      src={link.payer_icon}
+                      alt={link.payer}
+                      className="history-user-icon"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div className="user-icon-fallback" style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
+                      {link.payer ? link.payer[0] : '?'}
+                    </div>
+                  )}
                 </div>
-                <div className="link-amount">
-                  <p className="amount-value">¥{Number(link.amount).toLocaleString()}</p>
+
+                <div className="link-main-info" style={{ flex: 1 }}>
+                  <div className="link-info">
+                    <p className="link-label">請求先</p>
+                    <p className="link-value">{link.payer || '（未設定）'}</p>
+                  </div>
+                  <div className="link-amount">
+                    <p className="amount-value">¥{Number(link.amount).toLocaleString()}</p>
+                  </div>
                 </div>
               </div>
 

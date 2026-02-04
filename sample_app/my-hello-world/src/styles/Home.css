@@ -1,4 +1,4 @@
-/* 全体の背景 */
+/* 全体の背景設定 */
 .App {
   background-color: #f0f2f5;
   min-height: 100vh;
@@ -8,44 +8,35 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
-.status-bar {
-  width: 100%;
-  padding: 10px 20px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
 .app-container {
-  width: 90%;
-  max-width: 400px; /* スマホの横幅を意識 */
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;  /* 左右中央に寄せる */
-  
   width: 100%;
-  max-width: 400px;     /* スマホサイズを維持 */
-  margin: 0 auto;       /* ブラウザ中央に配置 */
+  max-width: 400px;
+  margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .app-title {
   width: 100%;
-  text-align: left;     /* 「マイページ」という文字自体は左寄せのままが良い場合 */
+  text-align: left;
   margin-bottom: 20px;
   color: #333;
+  font-size: 24px;
 }
 
-/* カードのデザイン */
+/* 口座カードのデザイン */
+
 .account-card {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); /* 銀行っぽい紺色 */
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   color: white;
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .card-header {
@@ -54,20 +45,46 @@
   margin-bottom: 20px;
 }
 
+.user-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.account-type {
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.user-info {
+  /* 既存コードから推測 */
+}
+
 .user-name {
   font-size: 18px;
+  font-weight: bold;
   margin: 0;
 }
 
 .account-number {
   font-size: 14px;
   opacity: 0.8;
-  margin: 5px 0 20px 0;
+  margin: 5px 0;
+}
+
+.balance-section {
+  margin-top: 20px;
 }
 
 .balance-label {
   font-size: 12px;
-  margin-bottom: 5px;
+  opacity: 0.9;
+  margin-bottom: 4px;
 }
 
 .balance-amount {
@@ -76,44 +93,132 @@
   margin: 0;
 }
 
+/* ボタンエリア */
+
 .button-group {
   display: flex;
-  flex-direction: column; /* 縦に並べる設定 */
-  gap: 16px;              /* ボタン同士の上下の隙間 */
-  width: 100%;            /* 横幅いっぱい */
-  margin-top: 30px;
-  padding: 0 10px;        /* 左右に少しゆとりを持たせる */
-  box-sizing: border-box;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 25px;
 }
 
-/* ボタン */
 .action-button {
   width: 100%;
-  padding: 18px 0;
-  border-radius: 16px; /* 角丸を少し大きくしてカードに合わせる */
+  padding: 16px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  
-  /* 修正ポイント：線を消し、影を「広く・薄く」する */
-  border: none; 
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); /* 透明度を0.06（6%）に下げてカードっぽく */
-  
-  transition: all 0.3s ease;
+  border: none;
+  background-color: white;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .action-button:active {
-  transform: translateY(2px); /* 押した時に少し沈む演出 */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0.9;
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.user-icon {
-  width: 60px;
-  height: 60px;
-  
-  object-fit: cover; 
-  display: block;
+.send-button {
+  background-color: #3b82f6;
+  color: white;
+}
 
-  margin-right: 5px;
+.request-button {
+  /* 追加すべき */
+}
+
+.history-button {
+  /* 追加すべき */
+}
+
+/* 届いている請求セクション */
+
+.incoming-requests-section {
+  width: 100%;
+  margin-top: 35px;
+  padding-bottom: 50px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.request-item-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 5px solid #3b82f6;
+}
+
+.request-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+}
+
+.request-sender {
+  font-weight: bold;
+  color: #1e3a8a;
+}
+
+.request-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.request-message {
+  font-size: 14px;
+  color: #333;
+}
+
+.request-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #d32f2f;
+}
+
+.pay-now-button {
+  margin-top: 4px;
+  padding: 10px;
+  border: none;
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pay-now-button:hover {
+  background-color: #dbeafe;
+}
+
+.no-requests {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* ローディング・エラー表示 */
+
+.loading, .error {
+  margin-top: 50px;
+  font-size: 16px;
+  color: #666;
 }

@@ -1,31 +1,32 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router";
+import { UserProvider } from './UserContext';
 import Home from './pages/Home';
 import Send from './pages/Send';
 import Confirm from './pages/Confirm';
 import Complete from './pages/Complete';
 import ReqHis from './pages/ReqHis';
 import Request from './pages/Request';
+import Payerselect from './pages/Payerselect';
 
 import Link from './pages/Link';
-import Pay from './pages/Pay';
-import Failed from './pages/Failed';
 
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/confirm" element={<Confirm />} />
-        <Route path="/send" element={<Send />} />
-        <Route path="/complete" element={<Complete />} />
-        <Route path="/reqhis" element={<ReqHis />} />
-        <Route path="/request" element={<Request />} />
-        <Route path="/link" element={<Link />} />
-        <Route path="/pay/:id" element={<Pay />} />
-        <Route path="/failed" element={<Failed />} />
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/confirm" element={<Confirm />} />
+          <Route path="/send" element={<Send />} />
+          <Route path="/complete" element={<Complete />} />
+          <Route path="/reqhis" element={<ReqHis />} />
+          <Route path="/request" element={<Request />} />
+          <Route path="/payerselect" element={<Payerselect />} />
+          <Route path="/link" element={<Link />} />
+        </Routes>
+      </UserProvider>
     </BrowserRouter>
   );
 }

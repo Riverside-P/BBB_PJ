@@ -18,8 +18,10 @@ app.use(express.json());
 // --- ルーティング ---
 
 // ユーザー関連の窓口 -> userControllerにお任せ
-app.get('/users', userController.getAllUsers);       // 一覧
-app.get('/users/:id', userController.getUserById);   // 詳細
+app.get('/users', userController.getAllUsers);                        // 一覧
+app.get('/users_excluding_self', userController.getUsersExcludingSelf); // 一覧(自分を除く)
+app.get('/users/:id', userController.getUserById);                    // 詳細
+app.get('/users/:id/stats', userController.getUserRequestStats);      // ← 新規追加：請求統計と届いている請求詳細
 
 // 送金関連の窓口 -> transferControllerにお任せ
 app.post('/transfers', transferController.createTransfer); // 送金
