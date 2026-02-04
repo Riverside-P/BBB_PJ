@@ -49,7 +49,8 @@ exports.getLink = (req, res) => {
             l.requester AS requester_id, 
             u.name AS requester_name, 
             u.account_number AS requester_account, 
-            u.icon_url AS requester_icon 
+            u.icon_url AS requester_icon,
+            u.id AS requester_user_id
         FROM links l
         LEFT JOIN users u ON l.requester = u.account_number
         WHERE l.id = ?

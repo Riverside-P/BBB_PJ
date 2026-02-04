@@ -5,50 +5,75 @@ import styles from '../styles/Pay.module.css';
 
 const Pay = () => {
   const { id } = useParams();
-
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [transferData, setTransferData] = useState(null); 
   const [myBalance, setMyBalance] = useState(null);       
-  const [payerName, setPayerName] = useState('');         
-
-  // ★ここでダミー金額を固定設定（GUIからは変更不可）
-  const DUMMY_AMOUNT = 3000; 
+  const [payerName, setPayerName] = useState('');     
+  const [payerData, setPayerData] = useState(null);    
 
   // 【ロジック】
   // 1. 氏名が未入力
   // 2. または、残高が固定金額より少ない
   // いずれかでボタンをグレーアウト
-  const isDisabled = 
-    payerName.trim().length === 0 || 
-    (myBalance !== null && myBalance < DUMMY_AMOUNT);
+  const isDisabled = false;
 
   useEffect(() => {
     const fetchData = async () => {
-        const toRes = await fetch('http://localhost:3001/links/${id}');
+      try {
+        // URL指定をバッククォート ` に修正（${id}を有効化するため）
+        const toRes = await fetch(`http://localhost:3001/link/${id}`);
         const toData = await toRes.json();
+
         setTransferData({
-          toId: toData.id,
-          toName: toData.requester,
+          toId: toData.requester_user_id,
+          toName: toData.requester_name,
+          toAccount: toData.requester_account,
+          toIcon: toData.requester_icon,
+          toComment: toData.comment,
+          toAmount: toData.amount,
         });
+
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
     };
     fetchData();
+  }, [id]); // ← ここに [id] を追加！
+
+  useEffect(() => {
+    const fetchMyData = async() => {
+      try{
+        const toRes = await fetch('http://localhost:3001/users/2');
+        const toData = await toRes.json();
+
+        setPayerData({
+          toId: toData.id,
+          toName: toData.name,
+          toAmount: toData.balance,
+        });
+
+        setMyBalance(payerData.toAmount);
+      }catch (error) {
+        console.error("Fetch error:", error);
+      };
+    };
+    fetchMyData();
   });
 
   const handleTransfer = async () => {
-    if (DUMMY_AMOUNT > myBalance) return alert("残高不足のため支払えません。");
+    if (transferData.toAmount > myBalance) return alert("残高不足のため支払えません。");
 
     const requestBody = { 
-      fromId: 1, 
+      fromId: payerData.toId, 
       toId: transferData.toId, 
-      amount: DUMMY_AMOUNT, // 固定値を送信
-      payerName: payerName,
+      amount: transferData.toAmount,
+      payerName: payerData.toName,
       message: "請求支払い"
     };
 
     try {
-      const res = await fetch('http://localhost:3001/transfers', {
+      const res = await fetch('http://localhost:3001/transfers/:id', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -70,7 +95,7 @@ const Pay = () => {
     return <div className={styles.container}><p>Loading...</p></div>;
   }
 
-  const afterBalance = myBalance - DUMMY_AMOUNT;
+  const afterBalance = myBalance - transferData.toAmount;
 
   return (
     <div className={styles.container}>
@@ -94,12 +119,12 @@ const Pay = () => {
         {/* 【修正】支払金額を「表示のみ」に変更（inputを削除） */}
         <div className={styles.totalRow}>
           <span className={styles.label}>支払金額</span>
-          <span className={styles.amountValue}>¥{DUMMY_AMOUNT.toLocaleString()}</span>
+          <span className={styles.amountValue}>¥{transferData.toAmount}</span>
         </div>
 
         <div className={styles.balancePreview}>
           <p className={styles.balanceTitle}>メッセージ</p>
-          <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>いつもご利用ありがとうございます。
+          <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>{transferData.toComment}
           </p>
         </div>
 
@@ -108,13 +133,7 @@ const Pay = () => {
         {/* 支払者氏名：こちらは引き続き入力可能 */}
         <div className={styles.inputGroup} style={{ display: 'flex', flexDirection: 'column' }}>
           <span className={styles.label}>支払者氏名</span>
-          <input
-            type="text"
-            value={payerName}
-            onChange={(e) => setPayerName(e.target.value)}
-            placeholder="例: 三菱 太郎"
-            className={styles.amountInput}
-          />
+          <p className={styles.userName}>{payerData.toName} </p>
         </div>
 
         {/* 残高予測 */}
