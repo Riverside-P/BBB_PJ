@@ -12,14 +12,6 @@ function Request() {
   const handleAmountChange = (e) => {
     const value = e.target.value;
     setAmount(value);
-<<<<<<< HEAD
-    
-    if (value && Number(value) < 1) {
-      setError('1円以上を入力してください');
-    } else {
-      setError('');
-    }
-=======
     if (value && Number(value) < 1) setError('1円以上を入力してください');
     else setError('');
   };
@@ -27,13 +19,12 @@ function Request() {
   // ★ユーザ選択画面へ遷移する処理
   const handleGoToSelect = () => {
     // 現在の入力内容を持って遷移する
-    navigate('/payerselect', { 
-      state: { 
-        amount: amount, 
-        message: message 
-      } 
+    navigate('/payerselect', {
+      state: {
+        amount: amount,
+        message: message
+      }
     });
->>>>>>> 38ba1ed (ユーザーselect画面の作成)
   };
 
   // リンク作成ボタンの処理（後で実装）
@@ -70,11 +61,11 @@ function Request() {
       }
 
       console.log('リンク作成成功 ID:', data.linkId);
-      
+
       // 成功したら完了画面やシェア画面へ遷移
       // 生成された linkId をURLパラメータとして渡す
-      navigate('/link', { 
-        state: { linkId: data.linkId } 
+      navigate('/link', {
+        state: { linkId: data.linkId }
       });
 
     } catch (err) {
@@ -121,8 +112,8 @@ function Request() {
       </div>
 
       <div className="button-group">
-        <button 
-          className="action-button primary" 
+        <button
+          className="action-button primary"
           onClick={handleCreateLink}
           disabled={!amount || Number(amount) < 1}
         >
