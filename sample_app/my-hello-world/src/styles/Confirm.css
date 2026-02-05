@@ -201,3 +201,47 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* スマートフォン対応 */
+.app-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 16px auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card {
+  padding: 20px;
+}
+
+.amount-input {
+  font-size: 20px;  /* スマホ用に縮小 */
+}
+
+.action-button {
+  padding: 14px;
+  font-size: 14px;
+}
+
+/* タブレット（768px～） */
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+
+  .amount-input {
+    font-size: 24px;
+  }
+
+  .action-button {
+    padding: 16px;
+    font-size: 16px;
+  }
+}
