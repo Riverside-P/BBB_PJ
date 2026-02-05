@@ -53,6 +53,12 @@ function Request() {
       return;
     }
 
+    // ★ 請求先が選択されているか確認
+    if (!selectedUser) {
+      setError('請求先ユーザーを選択してください');
+      return;
+    }
+
     const requestData = {
       status: 0,
       requester: currentUserId,
