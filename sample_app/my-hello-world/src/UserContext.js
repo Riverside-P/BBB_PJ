@@ -1,24 +1,43 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
-  // 初期値は localStorage から取得。なければ ID:1
-  const [currentUserId, setCurrentUserId] = useState(() => {
-    return Number(localStorage.getItem('myId')) || 1;
-  });
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within UserProvider');
+  }
+  return context;
+};
 
-  // ID が変わるたびに localStorage を更新
-  useEffect(() => {
-    localStorage.setItem('myId', currentUserId);
-  }, [currentUserId]);
+export const UserProvider = ({ children }) => {
+  const [currentUserId, setCurrentUserId] = useState(1);
+  const [userBalance, setUserBalance] = useState(0);
+
+  // 残高を更新する関数
+  const refreshBalance = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/users/${currentUserId}`);
+      if (res.ok) {
+        const userData = await res.json();
+        setUserBalance(userData.balance);
+      }
+    } catch (err) {
+      console.error('残高更新エラー:', err);
+    }
+  };
+
+  const value = {
+    currentUserId,
+    setCurrentUserId,
+    userBalance,
+    setUserBalance,
+    refreshBalance // ← 新しく追加
+  };
 
   return (
-    <UserContext.Provider value={{ currentUserId, setCurrentUserId }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );
 };
-
-// どの画面からでも簡単に呼び出せるようにするカスタムフック
-export const useUser = () => useContext(UserContext);

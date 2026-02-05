@@ -1,196 +1,97 @@
-# 個人間送金アプリ（プロトタイプ）開発_Day2事前共有資料
+# 個人間送金アプリ（プロトタイプ）
 
-本ドキュメントは、**数日間でプロトタイプを完成させること**を目的とした
-React + Node.js + SQLite3 による個人間送金アプリの設計方針・構成・DB構築フローをまとめたものです。
-
-Rails 経験者が React + Node.js にスムーズに移行できるよう、
-**Rails との対応関係を意識した構成**を採用しています。
+React（フロント） + Node.js/Express（API） + SQLite（DB）で構成されたプロトタイプです。フロントは Create React App、バックエンドは JSON API 専用の Express サーバーです。
 
 ---
 
-## 1. アプリ概要（プロトタイプ要件）
+## 1. 機能概要
 
-### 想定ユースケース（画面遷移）
+- 送金（ユーザー選択 → 金額入力 → 完了）
+- 請求（リンク作成、支払い、請求履歴の参照）
+- 送金履歴の参照
 
-1. **Home**
-   - 表示項目：
-     - 自身のアイコン / 氏名
-     - 自分の残高
-     - 「送金」ボタン
-   - 「送金」ボタンを押すとSendに遷移
-2. **Send**
-   - 表示項目：
-     - ユーザーのアイコン / 氏名一覧
-     - プロトタイプ段階では「自分以外の全Users」を表示
-   - ユーザーをタップするとConfirmへ推移
-3. **Confirm**
-   - 表示項目：
-     - 選択したユーザーのアイコン・氏名
-     - 送金金額入力フォーム
-     - 自分の残高
-     - 確定ボタン
-   - 送金額入力 → 確定ボタン押下でCompleteに遷移
-4. **Complete**
-   - 表示項目：
-     - 完了マーク
-     - Homeへ戻るボタン
-   - Homeへ戻るボタンを押下するとHomeへ遷移
+### 画面（ルーティング）
 
-※ 認証・認可・セキュリティは **本プロトタイプでは一旦考慮しない**
+- Home: `/`
+- Send: `/send`
+- Confirm: `/confirm`
+- Complete: `/complete`
+- Request: `/request`
+- Payerselect: `/payerselect`
+- Link: `/link`
+- Pay: `/pay/:linkId`
+- ReqHis: `/reqhis`
+- TransferHistory: `/transfer-history`
 
 ---
 
-## 2. 全体アーキテクチャ
+## 2. アーキテクチャ
 
 ```text
-[ Browser (Smartphone) ]
-        ↓
-[ React (Frontend) ]  --- API(JSON) --->  [ Node.js (Backend) ]  --->  [ SQLite3 ]
-```
-
-- 画面・状態管理：React
-- 永続データ・事実：Node.js + SQLite3
-- HTMLレンダリングは行わず、**API専用バックエンド**とする
-
----
-
-## 3. ディレクトリ構成（重要）
-
-### ルート構成
-
-```text
-project-root/
-├─ frontend/          # React（画面・状態）
-└─ backend/           # Node.js（API・DB）
+[ Browser ]
+    ↓
+[ React (Frontend) ]  --- API(JSON) --->  [ Express (Backend) ]  --->  [ SQLite ]
 ```
 
 ---
 
-### frontend 構成
+## 3. ディレクトリ構成（現状）
 
 ```text
-frontend/
-└─ src/
-   ├─ pages/          # 画面（URL単位）
-   │  ├─ Home.js
-   │  ├─ Send.js
-   │  ├─ Confirm.js
-   │  └─ Complete.js
-   │
-   ├─ components/     # 再利用UI部品
-   ├─ hooks/          # 状態・ロジック共有
-   ├─ services/       # API通信
-   ├─ styles/         # CSS（global / page）
-   ├─ App.js
-   └─ index.js
+BBB_PJ/
+└─ sample_app/
+   └─ my-hello-world/
+      ├─ backend/                 # APIサーバー
+      │  ├─ controllers/          # APIハンドラ
+      │  ├─ db/                    # SQLite DBファイル
+      │  ├─ db.js                  # DB接続
+      │  ├─ schema.sql             # テーブル定義
+      │  ├─ seed.sql               # 初期データ
+      │  └─ server.js              # サーバー起動
+      ├─ src/                      # React
+      │  ├─ pages/                 # 画面
+      │  ├─ styles/                # CSS
+      │  ├─ App.js
+      │  └─ index.js
+      ├─ tests/                    # Playwright
+      └─ package.json
 ```
-
-#### Rails対応イメージ
-
-| React      | Rails             |
-| ---------- | ----------------- |
-| pages      | controller + view |
-| components | partial           |
-| hooks      | helper / concern  |
-| services   | model（API呼び出し）    |
 
 ---
 
-### backend 構成
+## 4. APIエンドポイント（抜粋）
 
-```text
-backend/
-├─ db/
-│  └─ app.db                 # SQLite DB本体
-│
-├─ migrations/               # テーブル定義（migration相当）
-│  ├─ 001_create_users.js
-│  └─ 002_create_transactions.js
-│
-├─ seeds.js                  # 初期データ投入（seeds相当）
-├─ migrate.js                # migration実行スクリプト
-│
-├─ src/
-│  ├─ routes/                # ルーティング
-│  ├─ controllers/           # API処理
-│  ├─ services/              # ビジネスロジック
-│  └─ db.js                  # DB接続
-│
-├─ index.js                  # サーバ起動
-└─ package.json
-```
+### Users
 
-#### Rails対応イメージ
+- `GET /users` : ユーザー一覧
+- `GET /users_excluding_self` : 自分を除いた一覧
+- `GET /users/:id` : ユーザー詳細
+- `GET /users/:id/stats` : 請求統計 + 受信請求の詳細
 
+### Transfers
 
-| Node.js     | Rails            |
-| ----------- | ---------------- |
-| migrations  | db/migrate       |
-| migrate.js  | rails db:migrate |
-| seeds.js    | db/seeds.rb      |
-| controllers | app/controllers  |
-| services    | Service Object   |
+- `POST /transfers` : 送金
+- `GET /transfers/history/:payerId` : 送金履歴（支払い者）
+
+### Links（請求）
+
+- `GET /links` : 全件取得
+- `GET /links/requester/:id` : 請求者別取得
+- `POST /link` : リンク作成
+- `GET /link/:id` : 詳細取得
+- `PUT /link/:id` : 更新
+
+### Health
+
+- `GET /health` : ヘルスチェック
 
 ---
 
-## 4. DB設計（Users）
+## 5. DBスキーマ（現状）
+
+### users
 
 ```sql
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  account_number TEXT NOT NULL,
-  balance INTEGER DEFAULT 0,
-  icon_url TEXT
-);
-```
-
-- プロトタイプのため balance は users に直接保持
-- Send画面では **id / name / icon_url のみ使用**
-
----
-
-## 5. 暫定DB構築フロー（こっち使う）
-
-### ① 依存関係をインストール
-
-```bash
-npm install sqlite3 sqlite
-
-```
-
-### ② sqchema.sql, seed.sqlをDBに反映
-
-```bash
-BBB_PJ\sample_app\my-hello-world\backend\db>sqlite3 bbb_database.db < ../schema.sql
-BBB_PJ\sample_app\my-hello-world\backend\db>sqlite3 bbb_database.db < ../seed.sql
-
-```
-
-## 5. （一旦保留）DB構築フロー
-
-### ① 依存関係のインストール
-
-```bash
-npm install sqlite3 sqlite
-```
-
----
-
-### ② migration ファイル作成
-
-- `backend/migrations/001_create_users.js`
-- **役割：テーブル定義のみを書く**
-
-```text
-backend/migrations/
-├─ 001_create_users.js
-├─ 002_create_transactions.js
-```
-
-```js
-// 001_create_users.js
-export default `
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
@@ -198,128 +99,72 @@ CREATE TABLE IF NOT EXISTS users (
   balance INTEGER DEFAULT 0,
   icon_url TEXT
 );
-`;
+```
+
+### links
+
+```sql
+CREATE TABLE IF NOT EXISTS links (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  status INTEGER CHECK (status IN (0, 1)),
+  requester INTEGER,
+  payer INTEGER,
+  amount INTEGER NOT NULL CHECK (amount >= 1),
+  comment TEXT,
+  date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (requester) REFERENCES users(id),
+  FOREIGN KEY (payer) REFERENCES users(id)
+);
 ```
 
 ---
 
-### ③ migrate.js（migration実行役）
+## 6. セットアップ
 
-```js
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-
-import createUsers from "./migrations/001_create_users.js";
-//import createXxxxs from "./migrations/00x_create_xxxxs.js";のように書き加えていく
-
-const db = await open({
-  filename: "./db/database.sqlite",
-  driver: sqlite3.Database,
-});
-
-await db.exec(createUsers);
-//await db.exec(createXxxxs);のように書き加えていく
-
-console.log("Migration completed");
-```
+### ① 依存関係インストール
 
 ```bash
-node migrate.js
+cd BBB_PJ/sample_app/my-hello-world
+npm install
 ```
 
-- **テーブルを追加するたびに**
-  - migrations にファイルを追加
-  - migrate.js に import + exec を追記
+### ② DB初期化（SQLite）
+
+```bash
+cd BBB_PJ/sample_app/my-hello-world/backend
+sqlite3 db/bbb_database.db < schema.sql
+sqlite3 db/bbb_database.db < seed.sql
+```
 
 ---
 
-### ④ seeds.js（ダミーデータ投入）
+## 7. 起動方法
 
-```js
-async function seed() {
-  const db = await open({
-    filename: "./db/app.db",
-    driver: sqlite3.Database
-  });
-
-  // 既存データを消す（順序注意）
-  await db.exec("DELETE FROM transactions;");
-  await db.exec("DELETE FROM users;");
-
-  // users
-  await db.exec(`
-    INSERT INTO users (name, account_number, balance, icon_url)
-    VALUES
-      ('Alice', '0001', 5000, 'https://example.com/alice.png'),
-      ('Bob', '0002', 3000, 'https://example.com/bob.png');
-  `);
-
-  // transactions（例）
-  await db.exec(`
-    INSERT INTO transactions (from_user_id, to_user_id, amount, created_at)
-    VALUES
-      (1, 2, 1000, datetime('now'));
-  `);
-
-  await db.close();
-}
-```
+### フロント + API を同時起動
 
 ```bash
-node seeds.js
-```
-
-- 毎回同じ状態を再現可能
-- チーム全員が同じDBを持てる
-
----
-
-## テーブル追加時の手順まとめ
-
-1. `migrations/00x_create_xxx.js` を作成
-2. `migrate.js` に import & `await db.exec(...)` を追加
-3. `node migrate.js` を実行
-4. `seeds.js` にテストデータを追記
-5. `node seeds.js` を実行
-
-
-
-#### npmのscriptが定義済なら実行箇所は次のようにも書ける
-
-```bash
-#npm install package.json読み込み（？）
-npm run migrate
-npm run seed
+cd BBB_PJ/sample_app/my-hello-world
 npm run dev
 ```
 
----
-
-## 6. 開発ルール（プロトタイプ向け）
-
-### まずやること
-
-- pages 以外で API を直接呼ばない
-- DBは backend のみが操作する
-- migration / seeds を分離する
-
-### （一旦）やらないこと
-
-- 認証・認可
-- トランザクション管理（すぐ必要になりそう？）
-- rollback / migration管理テーブル
+- フロント: `http://localhost:3000`
+- API: `http://localhost:3001`
 
 ---
 
-## 7. 設計思想（重要）
+## 8. テスト
 
-> **入力途中の状態はフロント、確定した事実はバックエンド**
+Playwright のテストが `tests/` にあります。
+
+```bash
+cd BBB_PJ/sample_app/my-hello-world
+npx playwright test
+```
 
 ---
 
-## 8. 次のステップ候補
+## 9. 補足
 
-- Confirm → POST /transfers の設計
-- transactions テーブル設計の詳細化
-- 残高更新ロジックの整理
+- 認証・認可は未対応（プロトタイプ）
+- DB は `backend/db/bbb_database.db` を利用
 
