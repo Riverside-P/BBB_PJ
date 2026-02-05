@@ -15,19 +15,10 @@ function ReqHis() {
       setLoading(true);
 
       try {
-        // 1. まずは自分のユーザー情報を取得して「口座番号」を特定する
-        const userRes = await fetch(`http://localhost:3001/users/${currentUserId}`);
-        if (!userRes.ok) throw new Error('ユーザー情報の取得に失敗しました');
-        const userData = await userRes.json();
-
-        const accountNumber = userData.account_number;
-
-        // 2. 特定した口座番号を使って、既存のサーバーエンドポイントを叩く
-        const historyRes = await fetch(`http://localhost:3001/links/${accountNumber}`);
+        const historyRes = await fetch(`http://localhost:3001/links/requester/${currentUserId}`);
         if (!historyRes.ok) throw new Error('請求履歴の取得に失敗しました');
         const historyData = await historyRes.json();
 
-        console.log(`口座番号 ${accountNumber} の履歴を取得しました:`, historyData);
         setLinks(historyData);
       } catch (err) {
         console.error("履歴取得プロセスでエラーが発生しました:", err);
@@ -39,7 +30,6 @@ function ReqHis() {
     fetchHistory();
   }, [currentUserId]);
 
-  // ステータス表示のヘルパー関数
   const getStatusText = (status) => status === 0 ? '未払い' : '支払済';
   const getStatusClass = (status) => status === 0 ? 'status-pending' : 'status-paid';
 

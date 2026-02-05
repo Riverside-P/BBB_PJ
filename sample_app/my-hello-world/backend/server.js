@@ -26,9 +26,12 @@ app.get('/users/:id/stats', userController.getUserRequestStats);      // ← 新
 // 送金関連の窓口 -> transferControllerにお任せ
 app.post('/transfers', transferController.createTransfer); // 送金
 
+// 送金履歴関連の窓口
+app.get('/transfers/history/:payerId', transferController.getPayerTransferHistory);
+
 // 請求履歴関連の窓口 -> reqHisControllerにお任せ
 app.get('/links', reqHisController.getAllLinks);                    // 全件取得
-app.get('/links/:accountNumber', reqHisController.getLinksByRequester); // 特定ユーザーの請求
+app.get('/links/requester/:id', reqHisController.getLinksByRequesterId); // 特定ユーザーの請求
 
 //リンク情報関連の窓口
 //リンクテーブルへのインサート
@@ -36,6 +39,9 @@ app.post('/link', linkController.insertLink);
 
 //詳細取得
 app.get('/link/:id', linkController.getLink);
+
+// 更新
+app.put('/link/:id', linkController.updateLink);
 
 // ヘルスチェック
 app.get('/health', (req, res) => res.json({ ok: true }));
