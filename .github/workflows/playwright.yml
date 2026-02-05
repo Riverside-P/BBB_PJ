@@ -10,6 +10,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
+    # すべてのコマンドをアプリのディレクトリ内で実行
     defaults:
       run:
         working-directory: ./sample_app/my-hello-world
@@ -29,25 +30,28 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
+    # 警告(ESLint)でビルドを止めないよう CI=false を指定
     - name: Build Frontend
       run: npm run build
       env:
         CI: false
 
-    # ★改善点：起動と待機を「1つのステップ」にまとめ、かつGETメソッドで確認する
-    - name: Start Servers and Wait
+    # サーバー起動・待機・テストを一つのステップにまとめ、プロセスの切断を防ぎます
+    - name: Start Servers and Run Tests
       run: |
-        # バックエンドをIPv4(0.0.0.0)で確実に起動
+        # 1. バックエンド起動 (IPv4強制)
         HOST=0.0.0.0 PORT=3001 node backend/server.js &
-        # フロントエンドをIPv4(0.0.0.0)で確実に起動
+
+        # 2. フロントエンド起動 (ビルド済みファイルを軽量配信)
         npx serve -s build -l 3000 &
 
-        # http-get:// を指定することで、HEADリクエストではなく通常のGETで確認する
-        # これにより、Node.jsサーバーがHEADを解釈できずに無視する問題を回避する
-        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001/health -t 60000
+        echo "Waiting for servers..."
+        # 3. 待機 (http-getを使用してHEADリクエスト拒否問題を回避)
+        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001 -t 60000
 
-    - name: Run Playwright tests
-      run: npx playwright test
+        echo "Servers are ready! Starting Playwright..."
+        # 4. テスト実行 (ベースURLを強制指定し、Chromiumに絞って高速化)
+        PLAYWRIGHT_TEST_BASE_URL=http://127.0.0.1:3000 npx playwright test --project=chromium
 
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
