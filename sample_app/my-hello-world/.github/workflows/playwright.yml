@@ -1,9 +1,11 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    # どのブランチにプッシュしてもテストを走らせたい場合
+    branches: [ '**' ]
   pull_request:
-    branches: [ main, master ]
+    # main へのプルリクエストが作られた、または更新された時に走らせる
+    branches: [ main ]
 jobs:
   test:
     timeout-minutes: 60
