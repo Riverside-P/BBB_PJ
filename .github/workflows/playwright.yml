@@ -1,29 +1,54 @@
 name: Playwright Tests
 on:
   push:
-    # どのブランチにプッシュしてもテストを走らせたい場合
     branches: [ '**' ]
   pull_request:
-    # main へのプルリクエストが作られた、または更新された時に走らせる
     branches: [ main ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    # ★ここが最重要！ すべてのコマンドをアプリのフォルダ内で実行させる指示です
+    defaults:
+      run:
+        working-directory: ./sample_app/my-hello-world
+
     steps:
     - uses: actions/checkout@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        # キャッシュの場所も、パスを明示的に指定する必要があります
+        cache: 'npm'
+        cache-dependency-path: sample_app/my-hello-world/package-lock.json
+
     - name: Install dependencies
       run: npm ci
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+
+    # サーバーをバックグラウンドで起動
+    - name: Start Backend
+      run: node backend/server.js &
+
+    - name: Start Frontend
+      run: npm start &
+
+    # 起動を待つ
+    - name: Wait for servers
+      run: npx wait-on http://localhost:3000 http://localhost:3001
+
     - name: Run Playwright tests
       run: npx playwright test
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        path: playwright-report/
+        # レポートのパスもアプリの階層に合わせます
+        path: sample_app/my-hello-world/playwright-report/
         retention-days: 30
