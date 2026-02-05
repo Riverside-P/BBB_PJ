@@ -146,3 +146,66 @@
 .back-button:active {
   transform: translateY(0);
 }
+
+/* スマートフォン対応 */
+.app-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 16px auto; /* スマホ用に調整 */
+  padding: 0;
+}
+
+.user-item {
+  padding: 12px;
+  font-size: 14px;
+  gap: 12px;
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px; /* アイコンが圧縮されないように */
+}
+
+/* タブレット（768px～） */
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 500px;
+    margin: 20px auto;
+  }
+
+  .user-item {
+    padding: 15px;
+    font-size: 16px;
+    gap: 15px;
+  }
+
+  .user-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* 複数列レイアウト（タブレット以上） */
+  .users-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+
+  .user-item {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* デスクトップ（1024px～） */
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 700px;
+  }
+
+  .users-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
