@@ -6,8 +6,8 @@ exports.insertLink = (req, res) => {
 
     // 1. SQL文の準備（dateはDEFAULT設定があるので省略可能）
     const sql = `
-        INSERT INTO links (status, requester, payer, amount, comment)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO links (status, requester, payer, amount, comment, date)
+        VALUES (?, ?, ?, ?, ?, datetime('now', '+9 hours'))
     `;
 
     // 2. 外部キー制約を有効にする（db.js側で設定済みなら不要ですが、念のため）
