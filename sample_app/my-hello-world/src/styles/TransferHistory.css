@@ -1,2 +1,12 @@
-/* ReqHis.css と同じスタイルを使用 */
 @import './ReqHis.css';
+
+/* 残高推移の色分け */
+.amount-value.balance-increase {
+  color: #10b981;  /* 緑：受け取った */
+  font-weight: bold;
+}
+
+.amount-value.balance-decrease {
+  color: #ef4444;  /* 赤：送った */
+  font-weight: bold;
+}
