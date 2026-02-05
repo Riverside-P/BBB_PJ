@@ -137,7 +137,7 @@ function Request() {
         <hr className="divider" />
 
         <div className="input-group">
-          <span className="label">請求先指定（任意）</span>
+          <span className="label">請求先指定</span>
           <button
             className={`select-user-btn ${selectedUser ? 'selected' : ''}`}
             onClick={handleGoToSelect}
