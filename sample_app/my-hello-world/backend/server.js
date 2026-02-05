@@ -31,13 +31,14 @@ app.get('/transfers/history/:payerId', transferController.getPayerTransferHistor
 
 // 請求履歴関連の窓口 -> reqHisControllerにお任せ
 app.get('/links', reqHisController.getAllLinks);                    // 全件取得
-app.get('/links/requester/:id', reqHisController.getLinksByRequesterId); // 特定ユーザーの請求
+app.get('/links/requester/:id', reqHisController.getLinksByRequesterId); // 請求履歴のみ
+app.get('/transactions/history/:id', reqHisController.getTransactionHistory); // 取引履歴（送金＋支払済請求）
 
-//リンク情報関連の窓口
-//リンクテーブルへのインサート
+// リンク情報関連の窓口
+// リンクテーブルへのインサート
 app.post('/link', linkController.insertLink);
 
-//詳細取得
+// 詳細取得
 app.get('/link/:id', linkController.getLink);
 
 // 更新

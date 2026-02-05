@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ReqHis.css';
-import { useUser } from '../UserContext'; // Context のインポート
+import { useUser } from '../UserContext';
 
 function ReqHis() {
   const navigate = useNavigate();
-  const { currentUserId } = useUser(); // Context から現在のユーザーIDを取得
+  const { currentUserId } = useUser();
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +18,6 @@ function ReqHis() {
         const historyRes = await fetch(`http://localhost:3001/links/requester/${currentUserId}`);
         if (!historyRes.ok) throw new Error('請求履歴の取得に失敗しました');
         const historyData = await historyRes.json();
-
         setLinks(historyData);
       } catch (err) {
         console.error("履歴取得プロセスでエラーが発生しました:", err);

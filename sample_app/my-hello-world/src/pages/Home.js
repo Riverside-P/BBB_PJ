@@ -77,29 +77,18 @@ function Home() {
         </div>
       </div>
       <div className="button-group">
-        <button
-          className="action-button send-button"
-          onClick={() => navigate('/send')}
-        >
-          送金
-        </button>
-
+        <button className="action-button send-button" onClick={() => navigate('/send')}>送金</button>
         <button className="action-button request-button" onClick={() => navigate('/request', { state: { myId: currentUserId } })}>請求</button>
 
-        <button
-          className="action-button history-button"
-          onClick={() => navigate('/transfer-history')}
-        >
-          送金履歴
-        </button>
-
-        <button
-          className="action-button history-button"
-          onClick={() => navigate('/reqhis')}
-        >
+        {/* 請求履歴 */}
+        <button className="action-button history-button" onClick={() => navigate('/reqhis')}>
           請求履歴
         </button>
 
+        {/* 取引履歴 */}
+        <button className="action-button history-button" onClick={() => navigate('/transaction-history')}>
+          取引履歴
+        </button>
       </div>
 
       {/* 届いている請求セクション（新規追加） */}

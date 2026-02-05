@@ -6,7 +6,7 @@
 --    コマンド: sqlite3 db/bbb_database.db < schema.sql
 -- ==========================================================
 
--- ①ユーザ情報を管理するテーブル (ステップ1・3で使用）
+-- ①ユーザ情報を管理するテーブル (ステップ1・3で使用)
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,           -- ③ユーザ名
@@ -20,27 +20,13 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS links (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    
-    -- 0:請求中, 1:支払い済み or キャンセル
     status INTEGER CHECK (status IN (0, 1)),
-    
-    -- 【修正1】 usersテーブルの id カラムを参照するように変更
-    -- JSからはユーザーID(数値)が送られてくるため、ここもINTEGERにします
     requester INTEGER,
-    
-    -- 【修正2】 リンク作成時は支払う人が未定なので、NULLを許容する（NOT NULLを削除）
-    payer INTEGER,  -- ← TEXT → INTEGER に変更、NULL許容のまま
-    
-    -- 金額
+    payer INTEGER,
     amount INTEGER NOT NULL CHECK (amount >= 1),
-    
-    -- コメント
     comment TEXT,
-    
-    -- 作成日時
-    date DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    -- 【修正1の続き】 外部キーを users(id) に向ける
+    transaction_type INTEGER NOT NULL CHECK (transaction_type IN (0, 1)),
+    date DATETIME DEFAULT (datetime('now', '+09:00')),
     FOREIGN KEY (requester) REFERENCES users(id),
-    FOREIGN KEY (payer) REFERENCES users(id)  -- ← 外部キー制約を追加
+    FOREIGN KEY (payer) REFERENCES users(id)
 );

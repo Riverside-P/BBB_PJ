@@ -21,12 +21,17 @@ function App() {
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/send" element={<Send />} />
           <Route path="/complete" element={<Complete />} />
+
+          {/* 追加：請求履歴（従来通り） */}
           <Route path="/reqhis" element={<ReqHis />} />
+
+          {/* 取引履歴は別ページで表示（後述） */}
+          <Route path="/transaction-history" element={<TransferHistory />} />
+
           <Route path="/request" element={<Request />} />
           <Route path="/payerselect" element={<Payerselect />} />
           <Route path="/link" element={<Link />} />
-          <Route path="/pay/:linkId" element={<Pay />} /> {/* ← 追加 */}
-          <Route path="/transfer-history" element={<TransferHistory />} /> {/* ← 追加 */}
+          <Route path="/pay/:linkId" element={<Pay />} />
         </Routes>
       </UserProvider>
     </BrowserRouter>
