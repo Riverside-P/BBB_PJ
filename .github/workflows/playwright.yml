@@ -29,23 +29,22 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    # ★改善：CI=false を指定して、警告（ESLint）でビルドを止めないようにします
     - name: Build Frontend
       run: npm run build
       env:
         CI: false
 
-    # ビルド済みのフロントエンドとバックエンドを起動
-    - name: Start Servers
+    # ★改善点：起動と待機を「1つのステップ」にまとめ、かつGETメソッドで確認する
+    - name: Start Servers and Wait
       run: |
-        node backend/server.js &
+        # バックエンドをIPv4(0.0.0.0)で確実に起動
+        HOST=0.0.0.0 PORT=3001 node backend/server.js &
+        # フロントエンドをIPv4(0.0.0.0)で確実に起動
         npx serve -s build -l 3000 &
-      env:
-        PORT: 3001
 
-    # 127.0.0.1 を使って確実に待ちます（タイムアウトは3分に設定）
-    - name: Wait for servers
-      run: npx wait-on http://127.0.0.1:3000 http://127.0.0.1:3001 -t 180000
+        # http-get:// を指定することで、HEADリクエストではなく通常のGETで確認する
+        # これにより、Node.jsサーバーがHEADを解釈できずに無視する問題を回避する
+        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001 -t 60000
 
     - name: Run Playwright tests
       run: npx playwright test
