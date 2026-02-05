@@ -10,7 +10,6 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
-    # すべてのコマンドをアプリのフォルダ内で実行
     defaults:
       run:
         working-directory: ./sample_app/my-hello-world
@@ -21,7 +20,6 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-        # キャッシュの場所を明示的に指定
         cache: 'npm'
         cache-dependency-path: sample_app/my-hello-world/package-lock.json
 
@@ -31,23 +29,25 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    # サーバーをバックグラウンドで起動
-    - name: Start Backend
-      run: node backend/server.js &
+    # ★最適化1: 開発サーバーではなく、製品版としてビルドする
+    # これにより実行時の CPU 負荷が激減します
+    - name: Build Frontend
+      run: npm run build
+      env:
+        CI: true
+
+    # ★最適化2: バックエンドと、ビルド済みのフロントを起動
+    # node ではなく 127.0.0.1 を使うことでネットワーク解決を高速化
+    - name: Start Servers
+      run: |
+        node backend/server.js &
+        npx serve -s build -l 3000 &
       env:
         PORT: 3001
 
-    - name: Start Frontend
-      run: npm start &
-      env:
-        PORT: 3000
-        # ★重要: CI環境での最適化
-        BROWSER: none
-        CI: true
-
-    # 起動を待つ。-t でタイムアウト(60秒)を設定し、無制限に待つのを防ぐ
+    # ★最適化3: 待ち時間を3分 (180000ms) に延長しつつ、チェックを確実に
     - name: Wait for servers
-      run: npx wait-on http://localhost:3000 http://localhost:3001 -t 60000
+      run: npx wait-on http://127.0.0.1:3000 http://127.0.0.1:3001 -t 180000
 
     - name: Run Playwright tests
       run: npx playwright test
@@ -56,6 +56,5 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        # レポートのパスもアプリの階層に合わせる
         path: sample_app/my-hello-world/playwright-report/
         retention-days: 30
