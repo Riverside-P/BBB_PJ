@@ -44,7 +44,7 @@ jobs:
 
         # http-get:// を指定することで、HEADリクエストではなく通常のGETで確認する
         # これにより、Node.jsサーバーがHEADを解釈できずに無視する問題を回避する
-        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001 -t 60000
+        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001/health -t 60000
 
     - name: Run Playwright tests
       run: npx playwright test
