@@ -28,7 +28,7 @@ exports.createTransfer = (req, res) => {
         // linkIdがない場合（Send.js経由）は、linksテーブルに新規作成
         const insertLinkSql = `
           INSERT INTO links (status, requester, payer, amount, comment, date)
-          VALUES (1, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+          VALUES (1, ?, ?, ?, ?, datetime('now', '+9 hours'))
         `;
         db.run(insertLinkSql, [toId, fromId, amount, message || ''], (err) => {
           if (err) {
