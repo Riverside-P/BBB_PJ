@@ -47,7 +47,7 @@ jobs:
 
         echo "Waiting for servers..."
         # 3. 待機 (http-getを使用してHEADリクエスト拒否問題を回避)
-        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001 -t 60000
+        npx wait-on http-get://127.0.0.1:3000 http-get://127.0.0.1:3001/health -t 60000
 
         echo "Servers are ready! Starting Playwright..."
         # 4. テスト実行 (ベースURLを強制指定し、Chromiumに絞って高速化)
