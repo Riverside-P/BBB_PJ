@@ -24,8 +24,8 @@ exports.getAllLinks = (req, res) => {
   });
 };
 
-exports.getLinksByRequester = (req, res) => {
-  const { accountNumber } = req.params;
+exports.getLinksByRequesterId = (req, res) => {
+  const { id } = req.params;
 
   const sql = `
     SELECT
@@ -34,17 +34,15 @@ exports.getLinksByRequester = (req, res) => {
       l.amount,
       l.comment,
       l.date,
-      u_payer.name AS payer,       -- 名前がなければ NULL になる
+      u_payer.name AS payer,
       u_payer.icon_url AS payer_icon
     FROM links l
-    JOIN users u_req ON l.requester = u_req.id
-    -- ★ここを LEFT JOIN にすることで、payer が空でもデータが消えません
     LEFT JOIN users u_payer ON l.payer = u_payer.id
-    WHERE u_req.account_number = ?
+    WHERE l.requester = ?
     ORDER BY l.date DESC
   `;
 
-  db.all(sql, [accountNumber], (err, rows) => {
+  db.all(sql, [id], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });

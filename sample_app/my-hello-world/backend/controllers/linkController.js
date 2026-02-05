@@ -61,3 +61,22 @@ exports.getLink = (req, res) => {
         res.status(200).json(row);
     });
 };
+
+exports.updateLink = (req, res) => {
+    const id = req.params.id;
+    const { status } = req.body;
+
+    const sql = `UPDATE links SET status = ? WHERE id = ?`;
+
+    db.run(sql, [status, id], function (err) {
+        if (err) {
+            console.error("Update Error:", err.message);
+            return res.status(500).json({ error: "データベースエラーが発生しました。" });
+        }
+
+        res.status(200).json({
+            message: "リンク情報が更新されました。",
+            id: id
+        });
+    });
+};
